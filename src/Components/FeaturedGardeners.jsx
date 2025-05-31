@@ -19,7 +19,7 @@ const FeaturedGardeners = () => {
                 {gardeners.map(gardener => (
                     <div
                         key={gardener._id}
-                        className="bg-base-100 shadow-xl rounded-xl p-4 border border-primary/20"
+                        className="bg-base-300 shadow-xl rounded-xl p-4 border border-primary/20"
                     >
                         <img
                             src={gardener.image}
