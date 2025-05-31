@@ -59,13 +59,13 @@ const Navbar = () => {
         
         {!user ? (
           <Link 
-            to="/login" 
+            to="/auth/login" 
             className="btn btn-sm btn-primary"
           >
             Login
           </Link>
         ) : (
-          <div className="dropdown dropdown-end">
+          <div className="dropdown dropdown-end z-10">
             <div 
               tabIndex={0} 
               role="button" 
