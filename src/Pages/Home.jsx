@@ -1,9 +1,10 @@
 import React from 'react';
+import EventSlider from '../Components/EventSlider';
 
 const Home = () => {
     return (
         <div>
-            this is home page
+            <EventSlider></EventSlider>
         </div>
     );
 };
