@@ -146,44 +146,44 @@ const TopTrendingTips = () => {
     }
 
     return (
-        <section className="px-6 py-12 bg-base-100">
-            <h2 className="text-3xl font-bold text-center text-primary mb-10">
+        <section className="px-2 sm:px-6 py-8 sm:py-12 bg-base-100">
+            <h2 className="text-2xl sm:text-3xl font-bold text-center text-primary mb-6 sm:mb-10">
                 🌿 Top Trending Tips
             </h2>
 
             {tips.length === 0 ? (
                 <p className="text-center text-base-content">No tips found.</p>
             ) : (
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                     {tips.map((tip) => (
                         <div
                             key={tip._id}
                             className="card bg-base-300 shadow-md hover:shadow-xl transition duration-300 border border-primary/10"
                         >
                             {tip.image && (
-                                <figure className="px-4 pt-4">
+                                <figure className="px-3 sm:px-4 pt-3 sm:pt-4">
                                     <img 
                                         src={tip.image} 
                                         alt={tip.title}
-                                        className="rounded-xl h-48 w-full object-cover"
+                                        className="rounded-xl h-40 sm:h-48 w-full object-cover"
                                     />
                                 </figure>
                             )}
-                            <div className="card-body">
-                                <h3 className="card-title text-primary">{tip.title}</h3>
+                            <div className="card-body p-4 sm:p-6">
+                                <h3 className="card-title text-lg sm:text-xl text-primary">{tip.title}</h3>
 
-                                <p className="text-sm text-base-content/70 mb-1">
+                                <p className="text-xs sm:text-sm text-base-content/70 mb-1">
                                     by <span className="font-semibold">{tip.author}</span> | {tip.category}
                                 </p>
 
-                                <p className="text-base-content line-clamp-2">{tip.description || tip.content}</p>
+                                <p className="text-sm sm:text-base text-base-content line-clamp-2">{tip.description || tip.content}</p>
 
-                                <div className="flex items-center justify-between mt-4 flex-wrap gap-2">
-                                    <span className="badge badge-base-300 text-base-content text-sm">
+                                <div className="flex items-center justify-between mt-3 sm:mt-4 flex-wrap gap-2">
+                                    <span className="badge badge-base-300 text-base-content text-xs sm:text-sm">
                                         🗓️ {tip.date ? new Date(tip.date).toLocaleDateString() : 'N/A'}
                                     </span>
 
-                                    <span className="text-sm text-base-content/80">
+                                    <span className="text-xs sm:text-sm text-base-content/80">
                                         👍 {tip.likes ?? 0} likes
                                     </span>
 
@@ -191,7 +191,7 @@ const TopTrendingTips = () => {
                                         <button
                                             onClick={() => handleLike(tip._id)}
                                             disabled={likeInProgress === tip._id}
-                                            className={`btn btn-sm ${
+                                            className={`btn btn-xs sm:btn-sm ${
                                                 likeInProgress === tip._id
                                                     ? 'btn-primary loading'
                                                     : 'btn-outline btn-primary'
@@ -199,10 +199,9 @@ const TopTrendingTips = () => {
                                         >
                                             {likeInProgress === tip._id ? 'Liking...' : 'Like'}
                                         </button>
-                                        
-                                        <button 
+                                        <button
                                             onClick={() => handleSeeDetails(tip._id)}
-                                            className="btn btn-primary btn-sm gap-2"
+                                            className="btn btn-xs sm:btn-sm btn-primary gap-1"
                                         >
                                             <FaEye /> Details
                                         </button>

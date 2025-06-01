@@ -95,95 +95,157 @@ const MyTips = () => {
     }
 
     return (
-        <div className="min-h-[calc(100vh-200px)] py-10 px-4">
+        <div className="min-h-[calc(100vh-200px)] py-8 sm:py-10 px-2 sm:px-4">
             <Helmet>
                 <title>My Garden Tips - GardenGlow</title>
                 <meta name="description" content="Manage your gardening tips, track their performance, and share your gardening knowledge with the community." />
                 <meta name="keywords" content="my tips, gardening advice, personal garden tips, tip management" />
             </Helmet>
-            <div className="max-w-7xl mx-auto">
-                <h2 className="text-3xl font-bold text-center text-primary mb-2">
+            <div className="w-full sm:w-11/12 max-w-7xl mx-auto">
+                <h2 className="text-2xl sm:text-3xl font-bold text-center text-primary mb-2">
                     My Garden Tips 🌿
                 </h2>
-                <p className="text-center text-base-content/70 mb-8">
+                <p className="text-center text-base-content/70 mb-6 sm:mb-8">
                     Manage your shared gardening tips
                 </p>
 
                 {tips.length === 0 ? (
-                    <div className="text-center py-10">
-                        <h3 className="text-xl font-semibold mb-2">No tips found</h3>
+                    <div className="text-center py-8 sm:py-10">
+                        <h3 className="text-lg sm:text-xl font-semibold mb-2">No tips found</h3>
                         <p className="text-base-content/70 mb-4">You haven't shared any tips yet.</p>
                         <button 
                             onClick={() => navigate('/share-tip')}
-                            className="btn btn-primary"
+                            className="btn btn-primary btn-sm sm:btn-md"
                         >
                             Share Your First Tip
                         </button>
                     </div>
                 ) : (
                     <div className="overflow-x-auto">
-                        <table className="table">
-                            <thead>
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Category</th>
-                                    <th>Difficulty</th>
-                                    <th>Status</th>
-                                    <th>Likes</th>
-                                    <th>Comments</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {tips.map((tip) => (
-                                    <tr key={tip._id}>
-                                        <td className="font-medium">{tip.title}</td>
-                                        <td>{tip.category}</td>
-                                        <td>
-                                            <span className={`badge ${
-                                                tip.difficulty === 'Easy' ? 'badge-success' :
-                                                tip.difficulty === 'Medium' ? 'badge-warning' :
-                                                'badge-error'
-                                            }`}>
-                                                {tip.difficulty}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <span className={`badge ${tip.status === 'public' ? 'badge-primary' : 'badge-ghost'}`}>
-                                                {tip.status}
-                                            </span>
-                                        </td>
-                                        <td>{tip.likes || 0}</td>
-                                        <td>{tip.comments?.length || 0}</td>
-                                        <td>
-                                            <div className="flex gap-2">
-                                                <button
-                                                    onClick={() => handleViewDetails(tip._id)}
-                                                    className="btn btn-ghost btn-sm"
-                                                    title="View Details"
-                                                >
-                                                    <FaEye className="text-primary" />
-                                                </button>
-                                                <button
-                                                    onClick={() => handleUpdate(tip._id)}
-                                                    className="btn btn-ghost btn-sm"
-                                                    title="Edit Tip"
-                                                >
-                                                    <FaEdit className="text-warning" />
-                                                </button>
-                                                <button
-                                                    onClick={() => handleDelete(tip._id)}
-                                                    className="btn btn-ghost btn-sm"
-                                                    title="Delete Tip"
-                                                >
-                                                    <FaTrash className="text-error" />
-                                                </button>
+                        {/* Mobile View */}
+                        <div className="sm:hidden space-y-4">
+                            {tips.map((tip) => (
+                                <div key={tip._id} className="card bg-base-300 shadow-md">
+                                    <div className="card-body p-4">
+                                        <h3 className="card-title text-primary text-lg">{tip.title}</h3>
+                                        <div className="space-y-2">
+                                            <p className="text-sm">
+                                                <span className="font-medium">Category:</span> {tip.category}
+                                            </p>
+                                            <div className="flex items-center gap-2">
+                                                <span className="font-medium text-sm">Difficulty:</span>
+                                                <span className={`badge badge-sm ${
+                                                    tip.difficulty === 'Easy' ? 'badge-success' :
+                                                    tip.difficulty === 'Medium' ? 'badge-warning' :
+                                                    'badge-error'
+                                                }`}>
+                                                    {tip.difficulty}
+                                                </span>
                                             </div>
-                                        </td>
+                                            <div className="flex items-center gap-2">
+                                                <span className="font-medium text-sm">Status:</span>
+                                                <span className={`badge badge-sm ${tip.status === 'public' ? 'badge-primary' : 'badge-ghost'}`}>
+                                                    {tip.status}
+                                                </span>
+                                            </div>
+                                            <div className="flex gap-4 text-sm">
+                                                <span>👍 {tip.likes || 0} likes</span>
+                                                <span>💬 {tip.comments?.length || 0} comments</span>
+                                            </div>
+                                        </div>
+                                        <div className="card-actions justify-end mt-4">
+                                            <button
+                                                onClick={() => handleViewDetails(tip._id)}
+                                                className="btn btn-ghost btn-sm"
+                                                title="View Details"
+                                            >
+                                                <FaEye className="text-primary" />
+                                            </button>
+                                            <button
+                                                onClick={() => handleUpdate(tip._id)}
+                                                className="btn btn-ghost btn-sm"
+                                                title="Edit Tip"
+                                            >
+                                                <FaEdit className="text-warning" />
+                                            </button>
+                                            <button
+                                                onClick={() => handleDelete(tip._id)}
+                                                className="btn btn-ghost btn-sm"
+                                                title="Delete Tip"
+                                            >
+                                                <FaTrash className="text-error" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Desktop View */}
+                        <div className="hidden sm:block">
+                            <table className="table">
+                                <thead>
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Category</th>
+                                        <th>Difficulty</th>
+                                        <th>Status</th>
+                                        <th>Likes</th>
+                                        <th>Comments</th>
+                                        <th>Actions</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {tips.map((tip) => (
+                                        <tr key={tip._id}>
+                                            <td className="font-medium">{tip.title}</td>
+                                            <td>{tip.category}</td>
+                                            <td>
+                                                <span className={`badge ${
+                                                    tip.difficulty === 'Easy' ? 'badge-success' :
+                                                    tip.difficulty === 'Medium' ? 'badge-warning' :
+                                                    'badge-error'
+                                                }`}>
+                                                    {tip.difficulty}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span className={`badge ${tip.status === 'public' ? 'badge-primary' : 'badge-ghost'}`}>
+                                                    {tip.status}
+                                                </span>
+                                            </td>
+                                            <td>{tip.likes || 0}</td>
+                                            <td>{tip.comments?.length || 0}</td>
+                                            <td>
+                                                <div className="flex gap-2">
+                                                    <button
+                                                        onClick={() => handleViewDetails(tip._id)}
+                                                        className="btn btn-ghost btn-sm"
+                                                        title="View Details"
+                                                    >
+                                                        <FaEye className="text-primary" />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleUpdate(tip._id)}
+                                                        className="btn btn-ghost btn-sm"
+                                                        title="Edit Tip"
+                                                    >
+                                                        <FaEdit className="text-warning" />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleDelete(tip._id)}
+                                                        className="btn btn-ghost btn-sm"
+                                                        title="Delete Tip"
+                                                    >
+                                                        <FaTrash className="text-error" />
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 )}
             </div>

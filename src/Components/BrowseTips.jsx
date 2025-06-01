@@ -153,22 +153,22 @@ const BrowseTips = () => {
     }
 
     return (
-        <div className="min-h-[calc(100vh-200px)] py-10 px-4">
+        <div className="min-h-[calc(100vh-200px)] py-10 px-2 sm:px-4">
             <Helmet>
                 <title>Browse Tips - GardenGlow</title>
                 <meta name="description" content="Explore gardening tips and tricks shared by our community. Find advice on plant care, composting, pest control, and more." />
                 <meta name="keywords" content="gardening tips, plant care, garden advice, community tips, gardening help" />
             </Helmet>
-            <div className="max-w-7xl mx-auto">
+            <div className="w-full sm:w-11/12 max-w-7xl mx-auto">
                 <TopTrendingTips />
                 
-                <h2 className="text-3xl font-bold text-center text-primary mb-2">Browse Garden Tips 🌿</h2>
-                <p className="text-center text-base-content/70 mb-8">Discover and learn from our community's gardening wisdom</p>
+                <h2 className="text-2xl sm:text-3xl font-bold text-center text-primary mb-2">Browse Garden Tips 🌿</h2>
+                <p className="text-center text-base-content/70 mb-6 sm:mb-8">Discover and learn from our community's gardening wisdom</p>
 
                 {/* Filters */}
-                <div className="flex flex-wrap gap-4 mb-8 justify-center">
+                <div className="flex flex-wrap gap-3 sm:gap-4 mb-6 sm:mb-8 justify-center">
                     <select 
-                        className="select select-bordered select-primary"
+                        className="select select-bordered select-primary select-sm sm:select-md"
                         value={filter.category}
                         onChange={(e) => setFilter({...filter, category: e.target.value})}
                     >
@@ -195,7 +195,7 @@ const BrowseTips = () => {
                     </select> */}
 
                     <select 
-                        className="select select-bordered select-primary"
+                        className="select select-bordered select-primary select-sm sm:select-md"
                         value={filter.sort}
                         onChange={(e) => setFilter({...filter, sort: e.target.value})}
                     >
@@ -205,28 +205,28 @@ const BrowseTips = () => {
                 </div>
 
                 {/* Filtering Controls */}
-                <div className="flex justify-center mb-8">
+                <div className="flex justify-center mb-6 sm:mb-8">
                     <div className="join">
                         <button 
-                            className={`join-item btn ${selectedDifficulty === 'all' ? 'btn-primary' : 'btn-ghost'}`}
+                            className={`join-item btn btn-sm sm:btn-md ${selectedDifficulty === 'all' ? 'btn-primary' : 'btn-ghost'}`}
                             onClick={() => setSelectedDifficulty('all')}
                         >
                             All
                         </button>
                         <button 
-                            className={`join-item btn ${selectedDifficulty === 'Easy' ? 'btn-primary' : 'btn-ghost'}`}
+                            className={`join-item btn btn-sm sm:btn-md ${selectedDifficulty === 'Easy' ? 'btn-primary' : 'btn-ghost'}`}
                             onClick={() => setSelectedDifficulty('Easy')}
                         >
                             Easy
                         </button>
                         <button 
-                            className={`join-item btn ${selectedDifficulty === 'Medium' ? 'btn-primary' : 'btn-ghost'}`}
+                            className={`join-item btn btn-sm sm:btn-md ${selectedDifficulty === 'Medium' ? 'btn-primary' : 'btn-ghost'}`}
                             onClick={() => setSelectedDifficulty('Medium')}
                         >
                             Medium
                         </button>
                         <button 
-                            className={`join-item btn ${selectedDifficulty === 'Hard' ? 'btn-primary' : 'btn-ghost'}`}
+                            className={`join-item btn btn-sm sm:btn-md ${selectedDifficulty === 'Hard' ? 'btn-primary' : 'btn-ghost'}`}
                             onClick={() => setSelectedDifficulty('Hard')}
                         >
                             Hard
@@ -237,7 +237,7 @@ const BrowseTips = () => {
                 {/* Tips Grid */}
                 {filteredTips.length === 0 ? (
                     <div className="text-center py-10">
-                        <h3 className="text-xl font-semibold mb-2">No tips found</h3>
+                        <h3 className="text-lg sm:text-xl font-semibold mb-2">No tips found</h3>
                         <p className="text-base-content/70">
                             {selectedDifficulty === 'all' 
                                 ? "No tips have been shared yet." 
@@ -245,7 +245,7 @@ const BrowseTips = () => {
                         </p>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                         {filteredTips.map((tip) => (
                             <div key={tip._id} className="card bg-base-300 shadow-xl hover:shadow-2xl transition-shadow duration-300 border border-primary/10">
                                 <figure className="px-4 pt-4">

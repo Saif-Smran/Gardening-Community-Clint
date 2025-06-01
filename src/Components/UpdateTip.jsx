@@ -105,14 +105,14 @@ const UpdateTip = () => {
     }
 
     return (
-        <div className="min-h-[calc(100vh-200px)] py-10 px-4">
+        <div className="min-h-[calc(100vh-200px)] py-10 px-2 sm:px-4">
             <Helmet>
                 <title>{formData.title ? `Edit: ${formData.title} - GardenGlow` : 'Edit Tip - GardenGlow'}</title>
                 <meta name="description" content="Update your gardening tip and improve your contribution to the GardenGlow community." />
                 <meta name="keywords" content="edit tip, update gardening advice, improve garden tip" />
             </Helmet>
-            <div className="max-w-2xl mx-auto bg-base-300 p-6 rounded-lg shadow-xl">
-                <h3 className="text-2xl font-bold text-primary mb-4">Update Tip</h3>
+            <div className="w-full sm:w-11/12 max-w-2xl mx-auto bg-base-300 p-4 sm:p-6 rounded-lg shadow-xl">
+                <h3 className="text-xl sm:text-2xl font-bold text-primary mb-4">Update Tip</h3>
                 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>

@@ -221,15 +221,15 @@ const ShareTip = () => {
     };
 
     return (
-        <div className="min-h-[calc(100vh-200px)] py-10 px-4">
+        <div className="min-h-[calc(100vh-200px)] py-10 px-2 sm:px-4">
             <Helmet>
                 <title>Share Garden Tip - GardenGlow</title>
                 <meta name="description" content="Share your gardening knowledge and tips with the GardenGlow community. Help fellow gardeners grow and flourish." />
                 <meta name="keywords" content="share tips, gardening advice, garden wisdom, community contribution" />
             </Helmet>
-            <div className="max-w-3xl mx-auto p-8 bg-base-300 rounded-xl shadow-xl border border-primary/10">
-                <h2 className="text-3xl font-bold text-center text-primary mb-2">Share Your Garden Wisdom 🌱</h2>
-                <p className="text-center text-base-content/70 mb-8">Help fellow gardeners grow and flourish with your tips</p>
+            <div className="w-full sm:w-11/12 max-w-3xl mx-auto p-4 sm:p-8 bg-base-300 rounded-xl shadow-xl border border-primary/10">
+                <h2 className="text-2xl sm:text-3xl font-bold text-center text-primary mb-2">Share Your Garden Wisdom 🌱</h2>
+                <p className="text-center text-base-content/70 mb-6 sm:mb-8">Help fellow gardeners grow and flourish with your tips</p>
                 
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="form-control">

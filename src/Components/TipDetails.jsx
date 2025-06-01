@@ -205,16 +205,16 @@ const TipDetails = () => {
     }
 
     return (
-        <div className="min-h-[calc(100vh-200px)] py-10 px-4">
+        <div className="min-h-[calc(100vh-200px)] py-10 px-2 sm:px-4">
             <Helmet>
                 <title>{tip?.title ? `${tip.title} - GardenGlow` : 'Tip Details - GardenGlow'}</title>
                 <meta name="description" content={tip?.description || 'Detailed gardening tip from the GardenGlow community.'} />
                 <meta name="keywords" content={`gardening tips, ${tip?.category || ''}, ${tip?.difficulty || ''}, garden advice`} />
             </Helmet>
-            <div className="max-w-4xl mx-auto">
+            <div className="w-full sm:w-11/12 max-w-4xl mx-auto">
                 <button 
                     onClick={() => navigate('/browse-tips')}
-                    className="btn btn-ghost mb-6 gap-2"
+                    className="btn btn-ghost btn-sm sm:btn-md mb-4 sm:mb-6 gap-2"
                 >
                     <FaArrowLeft /> Back to Tips
                 </button>
@@ -223,48 +223,50 @@ const TipDetails = () => {
                     <img 
                         src={tip?.image} 
                         alt={tip?.title}
-                        className="w-full h-[300px] object-cover"
+                        className="w-full h-[200px] sm:h-[300px] object-cover"
                     />
                     
-                    <div className="p-6">
-                        <div className="flex items-center gap-4 mb-6">
+                    <div className="p-4 sm:p-6">
+                        <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
                             <img 
                                 src={tip?.authorPhoto || 'https://i.ibb.co/5GzXkwq/user.png'} 
                                 alt={tip?.author}
-                                className="w-12 h-12 rounded-full"
+                                className="w-10 h-10 sm:w-12 sm:h-12 rounded-full"
                             />
                             <div>
-                                <h4 className="font-medium text-lg">{tip?.author}</h4>
-                                <p className="text-sm text-base-content/70">
+                                <h4 className="font-medium text-base sm:text-lg">{tip?.author}</h4>
+                                <p className="text-xs sm:text-sm text-base-content/70">
                                     {new Date(tip?.date).toLocaleDateString()}
                                 </p>
                             </div>
                         </div>
 
-                        <h1 className="text-3xl font-bold text-primary mb-4">{tip?.title}</h1>
+                        <h1 className="text-2xl sm:text-3xl font-bold text-primary mb-3 sm:mb-4">{tip?.title}</h1>
                         
-                        <div className="flex gap-3 mb-6">
-                            <span className="badge badge-lg badge-primary">{tip?.category}</span>
-                            <span className="badge badge-lg badge-secondary">{tip?.difficulty}</span>
+                        <div className="flex gap-2 sm:gap-3 mb-4 sm:mb-6">
+                            <span className="badge badge-md sm:badge-lg badge-primary">{tip?.category}</span>
+                            <span className="badge badge-md sm:badge-lg badge-secondary">{tip?.difficulty}</span>
                         </div>
 
-                        <p className="text-lg mb-8 whitespace-pre-wrap">{tip?.description}</p>
+                        <p className="text-base sm:text-lg mb-6 sm:mb-8 whitespace-pre-wrap">{tip?.description}</p>
 
-                        <div className="flex justify-between items-center border-t border-base-content/10 pt-6">
-                            <div className="flex gap-6">
+                        <div className="flex justify-between items-center border-t border-base-content/10 pt-4 sm:pt-6">
+                            <div className="flex gap-4 sm:gap-6">
                                 <button 
-                                    className={`btn btn-ghost gap-2 ${isLikedByUser() ? 'text-red-500' : 'hover:text-red-500'}`}
+                                    className={`btn btn-ghost btn-sm sm:btn-md gap-2 ${isLikedByUser() ? 'text-red-500' : 'hover:text-red-500'}`}
                                     onClick={handleLike}
                                 >
                                     <FaHeart className={isLikedByUser() ? 'text-red-500' : 'text-gray-400'} />
-                                    {tip?.likes || 0} Likes
+                                    <span className="hidden sm:inline">{tip?.likes || 0} Likes</span>
+                                    <span className="sm:hidden">{tip?.likes || 0}</span>
                                 </button>
-                                <button className="btn btn-ghost gap-2">
+                                <button className="btn btn-ghost btn-sm sm:btn-md gap-2">
                                     <FaComment className="text-primary" />
-                                    {tip?.comments?.length || 0} Comments
+                                    <span className="hidden sm:inline">{tip?.comments?.length || 0} Comments</span>
+                                    <span className="sm:hidden">{tip?.comments?.length || 0}</span>
                                 </button>
                             </div>
-                            <button className="btn btn-ghost">
+                            <button className="btn btn-ghost btn-sm sm:btn-md">
                                 <FaShare className="text-primary" />
                             </button>
                         </div>
@@ -272,50 +274,50 @@ const TipDetails = () => {
                 </div>
 
                 {/* Comments Section */}
-                <div className="mt-8">
-                    <h2 className="text-2xl font-bold mb-6">Comments</h2>
+                <div className="mt-6 sm:mt-8">
+                    <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Comments</h2>
                     
-                    <form onSubmit={handleComment} className="mb-8">
+                    <form onSubmit={handleComment} className="mb-6 sm:mb-8">
                         <div className="form-control">
                             <textarea
                                 value={comment}
                                 onChange={(e) => setComment(e.target.value)}
-                                className="textarea textarea-bordered focus:textarea-primary h-24"
+                                className="textarea textarea-bordered focus:textarea-primary h-20 sm:h-24"
                                 placeholder="Share your thoughts..."
                                 disabled={submitting}
                             ></textarea>
                         </div>
                         <button 
                             type="submit" 
-                            className={`btn btn-primary mt-4 ${submitting ? 'loading' : ''}`}
+                            className={`btn btn-primary btn-sm sm:btn-md mt-3 sm:mt-4 ${submitting ? 'loading' : ''}`}
                             disabled={submitting}
                         >
                             {submitting ? 'Adding Comment...' : 'Add Comment'}
                         </button>
                     </form>
 
-                    <div className="space-y-6">
+                    <div className="space-y-4 sm:space-y-6">
                         {tip?.comments?.map((comment, index) => (
-                            <div key={index} className="bg-base-200 p-4 rounded-lg">
-                                <div className="flex items-center gap-3 mb-3">
+                            <div key={index} className="bg-base-300 p-3 sm:p-4 rounded-lg">
+                                <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
                                     <img 
                                         src={comment?.userPhoto || 'https://i.ibb.co/5GzXkwq/user.png'} 
                                         alt={comment?.userName}
-                                        className="w-8 h-8 rounded-full"
+                                        className="w-6 h-6 sm:w-8 sm:h-8 rounded-full"
                                     />
                                     <div>
-                                        <h4 className="font-medium">{comment?.userName}</h4>
+                                        <h4 className="font-medium text-sm sm:text-base">{comment?.userName}</h4>
                                         <p className="text-xs text-base-content/70">
                                             {new Date(comment?.date).toLocaleDateString()}
                                         </p>
                                     </div>
                                 </div>
-                                <p className="text-base-content/90">{comment?.comment}</p>
+                                <p className="text-sm sm:text-base text-base-content/90">{comment?.comment}</p>
                             </div>
                         ))}
 
                         {tip?.comments?.length === 0 && (
-                            <div className="text-center py-8 text-base-content/70">
+                            <div className="text-center py-6 sm:py-8 text-base-content/70">
                                 No comments yet. Be the first to comment!
                             </div>
                         )}
