@@ -15,7 +15,7 @@ const TopTrendingTips = () => {
     useEffect(() => {
         const fetchTips = async () => {
             try {
-                const res = await fetch('http://localhost:3000/tips/top');
+                const res = await fetch('https://gardening-community-server-theta.vercel.app/tips/top');
                 if (!res.ok) {
                     throw new Error('Failed to fetch tips');
                 }
@@ -70,7 +70,7 @@ const TopTrendingTips = () => {
         try {
             setLikeInProgress(id);
             
-            const res = await fetch(`http://localhost:3000/tips/${id}/like`, {
+            const res = await fetch(`https://gardening-community-server-theta.vercel.app/tips/${id}/like`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json'

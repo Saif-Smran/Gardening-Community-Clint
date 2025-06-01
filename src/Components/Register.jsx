@@ -58,7 +58,7 @@ const Register = () => {
 
     const saveUserToBackend = async (userData) => {
         try {
-            const response = await fetch('http://localhost:3000/users', {
+            const response = await fetch('https://gardening-community-server-theta.vercel.app/users', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

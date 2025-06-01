@@ -82,7 +82,7 @@ const ShareTip = () => {
     const getOrCreateUser = async () => {
         try {
             // First try to get the user
-            let response = await fetch(`http://localhost:3000/users/${user.email}`);
+            let response = await fetch(`https://gardening-community-server-theta.vercel.app/users/${user.email}`);
             
             if (response.ok) {
                 return await response.json();
@@ -90,7 +90,7 @@ const ShareTip = () => {
             
             // If user doesn't exist, create them
             if (response.status === 404) {
-                response = await fetch('http://localhost:3000/users', {
+                response = await fetch('https://gardening-community-server-theta.vercel.app/users', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -127,7 +127,7 @@ const ShareTip = () => {
             const userData = await getOrCreateUser();
             
             // Update user with new tip count and activity
-            const response = await fetch(`http://localhost:3000/users/${user.email}`, {
+            const response = await fetch(`https://gardening-community-server-theta.vercel.app/users/${user.email}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json'
@@ -172,7 +172,7 @@ const ShareTip = () => {
                 comments: []
             };
 
-            const tipResponse = await fetch('http://localhost:3000/tips', {
+            const tipResponse = await fetch('https://gardening-community-server-theta.vercel.app/tips', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

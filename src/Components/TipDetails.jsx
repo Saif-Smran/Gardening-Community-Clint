@@ -21,7 +21,7 @@ const TipDetails = () => {
 
     const fetchTipDetails = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/tips/${tipId}`);
+            const response = await fetch(`https://gardening-community-server-theta.vercel.app/tips/${tipId}`);
             if (!response.ok) throw new Error('Failed to fetch tip details');
             
             const data = await response.json();
@@ -55,7 +55,7 @@ const TipDetails = () => {
         const isCurrentlyLiked = isLikedByUser();
 
         try {
-            const response = await fetch(`http://localhost:3000/tips/${tipId}/like`, {
+            const response = await fetch(`https://gardening-community-server-theta.vercel.app/tips/${tipId}/like`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json'
@@ -137,7 +137,7 @@ const TipDetails = () => {
         setSubmitting(true);
 
         try {
-            const response = await fetch(`http://localhost:3000/tips/${tipId}/comment`, {
+            const response = await fetch(`https://gardening-community-server-theta.vercel.app/tips/${tipId}/comment`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

@@ -9,7 +9,7 @@ const EventSlider = () => {
     const [events, setEvents] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:3000/slides') // Replace with your real API endpoint
+        fetch('https://gardening-community-server-theta.vercel.app/slides') // Replace with your real API endpoint
             .then(res => res.json())
             .then(data => {
                 const filtered = data.filter(event => event?.backgroundImage); // Ensure valid slides

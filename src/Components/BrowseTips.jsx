@@ -24,13 +24,13 @@ const BrowseTips = () => {
 
     const fetchTips = async () => {
         try {
-            let url = 'http://localhost:3000/tips';
+            let url = 'https://gardening-community-server-theta.vercel.app/tips';
             
             // Handle sorting
             if (filter.sort === 'newest') {
-                url = 'http://localhost:3000/tips?sortBy=date&order=desc';
+                url = 'https://gardening-community-server-theta.vercel.app/tips?sortBy=date&order=desc';
             } else if (filter.sort === 'mostLiked') {
-                url = 'http://localhost:3000/tips?sortBy=likes&order=desc';
+                url = 'https://gardening-community-server-theta.vercel.app/tips?sortBy=likes&order=desc';
             }
 
             // Add category and difficulty filters if selected
@@ -79,7 +79,7 @@ const BrowseTips = () => {
         }
 
         try {
-            const response = await fetch(`http://localhost:3000/tips/${tipId}/like`, {
+            const response = await fetch(`https://gardening-community-server-theta.vercel.app/tips/${tipId}/like`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',

@@ -24,7 +24,7 @@ const FeaturedGardeners = () => {
     };
 
     useEffect(() => {
-        fetch('http://localhost:3000/gardeners/active')
+        fetch('https://gardening-community-server-theta.vercel.app/gardeners/active')
             .then(res => res.json())
             .then(data => {
                 // Process numeric values

@@ -18,7 +18,7 @@ const MyTips = () => {
 
     const fetchMyTips = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/tips/my-tips/${user.email}`);
+            const response = await fetch(`https://gardening-community-server-theta.vercel.app/tips/my-tips/${user.email}`);
             if (!response.ok) throw new Error('Failed to fetch tips');
             
             const data = await response.json();
@@ -51,7 +51,7 @@ const MyTips = () => {
 
         if (result.isConfirmed) {
             try {
-                const response = await fetch(`http://localhost:3000/tips/${tipId}`, {
+                const response = await fetch(`https://gardening-community-server-theta.vercel.app/tips/${tipId}`, {
                     method: 'DELETE'
                 });
 

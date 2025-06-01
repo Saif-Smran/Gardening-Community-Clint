@@ -21,7 +21,7 @@ const UpdateTip = () => {
     useEffect(() => {
         const fetchTip = async () => {
             try {
-                const response = await fetch(`http://localhost:3000/tips/${tipId}`);
+                const response = await fetch(`https://gardening-community-server-theta.vercel.app/tips/${tipId}`);
                 if (!response.ok) throw new Error('Failed to fetch tip');
                 
                 const tipData = await response.json();
@@ -65,7 +65,7 @@ const UpdateTip = () => {
         setLoading(true);
 
         try {
-            const response = await fetch(`http://localhost:3000/tips/${tipId}`, {
+            const response = await fetch(`https://gardening-community-server-theta.vercel.app/tips/${tipId}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json'

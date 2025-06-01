@@ -25,7 +25,7 @@ const ExploreGardeners = () => {
     const fetchGardeners = async () => {
         try {
             setLoading(true);
-            let url = 'http://localhost:3000/gardeners';
+            let url = 'https://gardening-community-server-theta.vercel.app/gardeners';
             
             const params = new URLSearchParams();
             if (filter.experience !== 'all') params.append('experience', filter.experience);
