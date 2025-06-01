@@ -4,13 +4,14 @@ import Swal from 'sweetalert2';
 import { FaHeart, FaComment, FaShare, FaEye } from 'react-icons/fa';
 import { AuthContext } from '../providers/AuthProvider';
 import { useNavigate } from 'react-router-dom';
-import LoadingSpinner from './LoadingSpinner';
+import LoadingAnimation from './LoadingAnimation';
 
 const BrowseTips = () => {
     const { user } = useContext(AuthContext);
     const navigate = useNavigate();
     const [tips, setTips] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [filter, setFilter] = useState({
         category: 'all',
         difficulty: 'all',
@@ -24,6 +25,8 @@ const BrowseTips = () => {
 
     const fetchTips = async () => {
         try {
+            setLoading(true);
+            setError(null);
             let url = 'https://gardening-community-server-theta.vercel.app/tips';
             
             // Handle sorting
@@ -42,19 +45,13 @@ const BrowseTips = () => {
             }
 
             const response = await fetch(url);
-            if (!response.ok) throw new Error('Failed to fetch tips');
+            if (!response.ok) throw new Error('Failed to fetch gardening tips');
             
             const data = await response.json();
             setTips(data);
         } catch (error) {
             console.error('Error fetching tips:', error);
-            Swal.fire({
-                title: 'Error',
-                text: 'Failed to load gardening tips',
-                icon: 'error',
-                confirmButtonColor: '#4CAF50',
-                background: '#DCEDC8'
-            });
+            setError(error.message);
         } finally {
             setLoading(false);
         }
@@ -148,7 +145,24 @@ const BrowseTips = () => {
         : tips.filter(tip => tip.difficulty === selectedDifficulty);
 
     if (loading) {
-        return <LoadingSpinner />;
+        return <LoadingAnimation />;
+    }
+
+    if (error) {
+        return (
+            <div className="min-h-[calc(100vh-200px)] flex items-center justify-center">
+                <div className="text-center">
+                    <h2 className="text-2xl font-bold text-error mb-4">Failed to Load Tips</h2>
+                    <p className="text-base-content/70 mb-4">{error}</p>
+                    <button 
+                        onClick={() => fetchTips()} 
+                        className="btn btn-primary"
+                    >
+                        Try Again
+                    </button>
+                </div>
+            </div>
+        );
     }
 
     return (
@@ -181,16 +195,16 @@ const BrowseTips = () => {
                         <option value="Water Management">Water Management</option>
                     </select>
 
-                    {/* <select 
-                        className="select select-bordered select-primary"
+                    <select 
+                        className="select select-bordered select-primary select-sm sm:select-md"
                         value={filter.difficulty}
                         onChange={(e) => setFilter({...filter, difficulty: e.target.value})}
                     >
                         <option value="all">All Difficulties</option>
-                        <option value="Easy">Easy</option>
-                        <option value="Medium">Medium</option>
-                        <option value="Hard">Hard</option>
-                    </select> */}
+                        <option value="Beginner">Beginner</option>
+                        <option value="Intermediate">Intermediate</option>
+                        <option value="Advanced">Advanced</option>
+                    </select>
 
                     <select 
                         className="select select-bordered select-primary select-sm sm:select-md"
@@ -212,22 +226,22 @@ const BrowseTips = () => {
                             All
                         </button>
                         <button 
-                            className={`join-item btn btn-sm sm:btn-md ${selectedDifficulty === 'Easy' ? 'btn-primary' : 'btn-ghost'}`}
-                            onClick={() => setSelectedDifficulty('Easy')}
+                            className={`join-item btn btn-sm sm:btn-md ${selectedDifficulty === 'Beginner' ? 'btn-primary' : 'btn-ghost'}`}
+                            onClick={() => setSelectedDifficulty('Beginner')}
                         >
-                            Easy
+                            Beginner
                         </button>
                         <button 
-                            className={`join-item btn btn-sm sm:btn-md ${selectedDifficulty === 'Medium' ? 'btn-primary' : 'btn-ghost'}`}
-                            onClick={() => setSelectedDifficulty('Medium')}
+                            className={`join-item btn btn-sm sm:btn-md ${selectedDifficulty === 'Intermediate' ? 'btn-primary' : 'btn-ghost'}`}
+                            onClick={() => setSelectedDifficulty('Intermediate')}
                         >
-                            Medium
+                            Intermediate
                         </button>
                         <button 
-                            className={`join-item btn btn-sm sm:btn-md ${selectedDifficulty === 'Hard' ? 'btn-primary' : 'btn-ghost'}`}
-                            onClick={() => setSelectedDifficulty('Hard')}
+                            className={`join-item btn btn-sm sm:btn-md ${selectedDifficulty === 'Advanced' ? 'btn-primary' : 'btn-ghost'}`}
+                            onClick={() => setSelectedDifficulty('Advanced')}
                         >
-                            Hard
+                            Advanced
                         </button>
                     </div>
                 </div>
@@ -274,8 +288,8 @@ const BrowseTips = () => {
                                     <div className="flex gap-2 mt-2">
                                         <span className="badge badge-primary">{tip.category}</span>
                                         <span className={`badge ${
-                                            tip.difficulty === 'Easy' ? 'badge-success' :
-                                            tip.difficulty === 'Medium' ? 'badge-warning' :
+                                            tip.difficulty === 'Beginner' ? 'badge-success' :
+                                            tip.difficulty === 'Intermediate' ? 'badge-warning' :
                                             'badge-error'
                                         }`}>
                                             {tip.difficulty}

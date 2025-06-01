@@ -11,6 +11,7 @@ const ExploreGardeners = () => {
     const navigate = useNavigate();
     const [gardeners, setGardeners] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [filter, setFilter] = useState({
         experience: 'all',
         status: 'all',
@@ -25,6 +26,7 @@ const ExploreGardeners = () => {
     const fetchGardeners = async () => {
         try {
             setLoading(true);
+            setError(null);
             let url = 'https://gardening-community-server-theta.vercel.app/gardeners';
             
             const params = new URLSearchParams();
@@ -55,6 +57,7 @@ const ExploreGardeners = () => {
             setGardeners(processedData);
         } catch (error) {
             console.error('Error fetching gardeners:', error);
+            setError(error.message);
         } finally {
             setLoading(false);
         }
@@ -111,6 +114,23 @@ const ExploreGardeners = () => {
 
     if (loading) {
         return <LoadingAnimation />;
+    }
+
+    if (error) {
+        return (
+            <div className="min-h-[calc(100vh-200px)] flex items-center justify-center">
+                <div className="text-center">
+                    <h2 className="text-2xl font-bold text-error mb-4">Failed to Load Gardeners</h2>
+                    <p className="text-base-content/70 mb-4">{error}</p>
+                    <button 
+                        onClick={() => fetchGardeners()} 
+                        className="btn btn-primary"
+                    >
+                        Try Again
+                    </button>
+                </div>
+            </div>
+        );
     }
 
     return (
