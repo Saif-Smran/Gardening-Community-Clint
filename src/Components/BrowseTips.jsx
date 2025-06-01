@@ -3,6 +3,7 @@ import Swal from 'sweetalert2';
 import { FaHeart, FaComment, FaShare, FaEye } from 'react-icons/fa';
 import { AuthContext } from '../providers/AuthProvider';
 import { useNavigate } from 'react-router-dom';
+import LoadingSpinner from './LoadingSpinner';
 
 const BrowseTips = () => {
     const { user } = useContext(AuthContext);
@@ -14,6 +15,7 @@ const BrowseTips = () => {
         difficulty: 'all',
         sort: 'newest'
     });
+    const [selectedDifficulty, setSelectedDifficulty] = useState('all');
 
     useEffect(() => {
         fetchTips();
@@ -69,11 +71,12 @@ const BrowseTips = () => {
             return;
         }
 
-        // Optimistically update the UI
+        // Store original state for rollback
         const originalTips = [...tips];
         const tipToUpdate = tips.find(tip => tip._id === tipId);
         const isCurrentlyLiked = tipToUpdate.likedBy?.includes(user.email);
 
+        // Optimistically update UI
         setTips(tips.map(tip => {
             if (tip._id === tipId) {
                 return {
@@ -109,6 +112,16 @@ const BrowseTips = () => {
                 tip._id === tipId ? { ...tip, likes: data.likes, likedBy: data.likedBy } : tip
             ));
 
+            await Swal.fire({
+                title: 'Success!',
+                text: 'Tip liked successfully',
+                icon: 'success',
+                timer: 1500,
+                showConfirmButton: false,
+                background: '#DCEDC8',
+                iconColor: '#4CAF50'
+            });
+
         } catch (error) {
             console.error('Error liking tip:', error);
             // Revert to original state on error
@@ -129,15 +142,34 @@ const BrowseTips = () => {
     };
 
     const handleSeeDetails = (tipId) => {
+        if (!user) {
+            Swal.fire({
+                title: 'Please Login',
+                text: 'You need to be logged in to view tip details',
+                icon: 'info',
+                confirmButtonColor: '#4CAF50',
+                background: '#DCEDC8',
+                showCancelButton: true,
+                confirmButtonText: 'Login',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Store the intended destination
+                    localStorage.setItem('redirectAfterLogin', `/tip-details/${tipId}`);
+                    navigate('/auth/login');
+                }
+            });
+            return;
+        }
         navigate(`/tip-details/${tipId}`);
     };
 
+    const filteredTips = selectedDifficulty === 'all' 
+        ? tips 
+        : tips.filter(tip => tip.difficulty === selectedDifficulty);
+
     if (loading) {
-        return (
-            <div className="min-h-[calc(100vh-200px)] flex items-center justify-center">
-                <span className="loading loading-spinner loading-lg text-primary"></span>
-            </div>
-        );
+        return <LoadingSpinner />;
     }
 
     return (
@@ -185,15 +217,49 @@ const BrowseTips = () => {
                     </select>
                 </div>
 
+                {/* Filtering Controls */}
+                <div className="flex justify-center mb-8">
+                    <div className="join">
+                        <button 
+                            className={`join-item btn ${selectedDifficulty === 'all' ? 'btn-primary' : 'btn-ghost'}`}
+                            onClick={() => setSelectedDifficulty('all')}
+                        >
+                            All
+                        </button>
+                        <button 
+                            className={`join-item btn ${selectedDifficulty === 'Easy' ? 'btn-primary' : 'btn-ghost'}`}
+                            onClick={() => setSelectedDifficulty('Easy')}
+                        >
+                            Easy
+                        </button>
+                        <button 
+                            className={`join-item btn ${selectedDifficulty === 'Medium' ? 'btn-primary' : 'btn-ghost'}`}
+                            onClick={() => setSelectedDifficulty('Medium')}
+                        >
+                            Medium
+                        </button>
+                        <button 
+                            className={`join-item btn ${selectedDifficulty === 'Hard' ? 'btn-primary' : 'btn-ghost'}`}
+                            onClick={() => setSelectedDifficulty('Hard')}
+                        >
+                            Hard
+                        </button>
+                    </div>
+                </div>
+
                 {/* Tips Grid */}
-                {tips.length === 0 ? (
+                {filteredTips.length === 0 ? (
                     <div className="text-center py-10">
                         <h3 className="text-xl font-semibold mb-2">No tips found</h3>
-                        <p className="text-base-content/70">Try adjusting your filters or check back later!</p>
+                        <p className="text-base-content/70">
+                            {selectedDifficulty === 'all' 
+                                ? "No tips have been shared yet." 
+                                : `No ${selectedDifficulty} difficulty tips available.`}
+                        </p>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {tips.map((tip) => (
+                        {filteredTips.map((tip) => (
                             <div key={tip._id} className="card bg-base-300 shadow-xl hover:shadow-2xl transition-shadow duration-300 border border-primary/10">
                                 <figure className="px-4 pt-4">
                                     <img 
@@ -222,7 +288,13 @@ const BrowseTips = () => {
                                     
                                     <div className="flex gap-2 mt-2">
                                         <span className="badge badge-primary">{tip.category}</span>
-                                        <span className="badge badge-secondary">{tip.difficulty}</span>
+                                        <span className={`badge ${
+                                            tip.difficulty === 'Easy' ? 'badge-success' :
+                                            tip.difficulty === 'Medium' ? 'badge-warning' :
+                                            'badge-error'
+                                        }`}>
+                                            {tip.difficulty}
+                                        </span>
                                     </div>
 
                                     <div className="card-actions flex-col gap-4 mt-4">

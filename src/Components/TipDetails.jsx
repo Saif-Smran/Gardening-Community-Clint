@@ -11,6 +11,7 @@ const TipDetails = () => {
     const [tip, setTip] = useState(null);
     const [loading, setLoading] = useState(true);
     const [comment, setComment] = useState('');
+    const [submitting, setSubmitting] = useState(false);
 
     useEffect(() => {
         fetchTipDetails();
@@ -51,15 +52,15 @@ const TipDetails = () => {
 
         // Store original state for rollback
         const originalTip = { ...tip };
-        const isCurrentlyLiked = tip.likedBy?.includes(user.email);
+        const isCurrentlyLiked = tip?.likedBy?.includes(user.email);
 
         // Optimistically update UI
         setTip(prev => ({
             ...prev,
-            likes: isCurrentlyLiked ? (prev.likes - 1) : (prev.likes + 1),
+            likes: isCurrentlyLiked ? (prev?.likes - 1) : ((prev?.likes || 0) + 1),
             likedBy: isCurrentlyLiked
                 ? prev.likedBy.filter(email => email !== user.email)
-                : [...(prev.likedBy || []), user.email]
+                : [...(prev?.likedBy || []), user.email]
         }));
 
         try {
@@ -120,6 +121,8 @@ const TipDetails = () => {
             return;
         }
 
+        setSubmitting(true);
+
         try {
             const response = await fetch(`http://localhost:3000/tips/${tipId}/comment`, {
                 method: 'POST',
@@ -130,7 +133,7 @@ const TipDetails = () => {
                     userEmail: user.email,
                     userName: user.displayName,
                     userPhoto: user.photoURL,
-                    comment: comment,
+                    comment: comment.trim(),
                     date: new Date().toISOString()
                 })
             });
@@ -158,6 +161,8 @@ const TipDetails = () => {
                 confirmButtonColor: '#4CAF50',
                 background: '#DCEDC8'
             });
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -202,34 +207,34 @@ const TipDetails = () => {
 
                 <div className="bg-base-300 rounded-xl shadow-xl border border-primary/10 overflow-hidden">
                     <img 
-                        src={tip.image} 
-                        alt={tip.title}
+                        src={tip?.image} 
+                        alt={tip?.title}
                         className="w-full h-[300px] object-cover"
                     />
                     
                     <div className="p-6">
                         <div className="flex items-center gap-4 mb-6">
                             <img 
-                                src={tip.authorPhoto || 'https://i.ibb.co/5GzXkwq/user.png'} 
-                                alt={tip.author}
+                                src={tip?.authorPhoto || 'https://i.ibb.co/5GzXkwq/user.png'} 
+                                alt={tip?.author}
                                 className="w-12 h-12 rounded-full"
                             />
                             <div>
-                                <h4 className="font-medium text-lg">{tip.author}</h4>
+                                <h4 className="font-medium text-lg">{tip?.author}</h4>
                                 <p className="text-sm text-base-content/70">
-                                    {new Date(tip.date).toLocaleDateString()}
+                                    {new Date(tip?.date).toLocaleDateString()}
                                 </p>
                             </div>
                         </div>
 
-                        <h1 className="text-3xl font-bold text-primary mb-4">{tip.title}</h1>
+                        <h1 className="text-3xl font-bold text-primary mb-4">{tip?.title}</h1>
                         
                         <div className="flex gap-3 mb-6">
-                            <span className="badge badge-primary badge-lg">{tip.category}</span>
-                            <span className="badge badge-secondary badge-lg">{tip.difficulty}</span>
+                            <span className="badge badge-lg badge-primary">{tip?.category}</span>
+                            <span className="badge badge-lg badge-secondary">{tip?.difficulty}</span>
                         </div>
 
-                        <p className="text-lg mb-8 whitespace-pre-wrap">{tip.description}</p>
+                        <p className="text-lg mb-8 whitespace-pre-wrap">{tip?.description}</p>
 
                         <div className="flex justify-between items-center border-t border-base-content/10 pt-6">
                             <div className="flex gap-6">
@@ -238,11 +243,11 @@ const TipDetails = () => {
                                     onClick={handleLike}
                                 >
                                     <FaHeart className={isLikedByUser() ? 'text-red-500' : 'text-gray-400'} />
-                                    {tip.likes || 0} Likes
+                                    {tip?.likes || 0} Likes
                                 </button>
                                 <button className="btn btn-ghost gap-2">
                                     <FaComment className="text-primary" />
-                                    {tip.comments?.length || 0} Comments
+                                    {tip?.comments?.length || 0} Comments
                                 </button>
                             </div>
                             <button className="btn btn-ghost">
@@ -263,35 +268,43 @@ const TipDetails = () => {
                                 onChange={(e) => setComment(e.target.value)}
                                 className="textarea textarea-bordered focus:textarea-primary h-24"
                                 placeholder="Share your thoughts..."
+                                disabled={submitting}
                             ></textarea>
                         </div>
                         <button 
                             type="submit" 
-                            className="btn btn-primary mt-4"
+                            className={`btn btn-primary mt-4 ${submitting ? 'loading' : ''}`}
+                            disabled={submitting}
                         >
-                            Add Comment
+                            {submitting ? 'Adding Comment...' : 'Add Comment'}
                         </button>
                     </form>
 
                     <div className="space-y-6">
-                        {tip.comments?.map((comment, index) => (
+                        {tip?.comments?.map((comment, index) => (
                             <div key={index} className="bg-base-200 p-4 rounded-lg">
                                 <div className="flex items-center gap-3 mb-3">
                                     <img 
-                                        src={comment.userPhoto || 'https://i.ibb.co/5GzXkwq/user.png'} 
-                                        alt={comment.userName}
+                                        src={comment?.userPhoto || 'https://i.ibb.co/5GzXkwq/user.png'} 
+                                        alt={comment?.userName}
                                         className="w-8 h-8 rounded-full"
                                     />
                                     <div>
-                                        <h4 className="font-medium">{comment.userName}</h4>
+                                        <h4 className="font-medium">{comment?.userName}</h4>
                                         <p className="text-xs text-base-content/70">
-                                            {new Date(comment.date).toLocaleDateString()}
+                                            {new Date(comment?.date).toLocaleDateString()}
                                         </p>
                                     </div>
                                 </div>
-                                <p className="text-base-content/90">{comment.comment}</p>
+                                <p className="text-base-content/90">{comment?.comment}</p>
                             </div>
                         ))}
+
+                        {tip?.comments?.length === 0 && (
+                            <div className="text-center py-8 text-base-content/70">
+                                No comments yet. Be the first to comment!
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

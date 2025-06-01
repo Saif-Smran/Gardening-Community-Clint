@@ -1,7 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { toast } from 'react-hot-toast';
+import React, { useEffect, useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { FaEye } from 'react-icons/fa';
+import { AuthContext } from '../providers/AuthProvider';
+import Swal from 'sweetalert2';
 
 const TopTrendingTips = () => {
+    const navigate = useNavigate();
+    const { user } = useContext(AuthContext);
     const [tips, setTips] = useState([]);
     const [loading, setLoading] = useState(true);
     const [likeInProgress, setLikeInProgress] = useState(null);
@@ -21,11 +26,23 @@ const TopTrendingTips = () => {
                     setTips(data);
                 } else {
                     setTips([]);
-                    toast.error('Unexpected data format from server');
+                    Swal.fire({
+                        title: 'Data Error',
+                        text: 'Unexpected data format from server',
+                        icon: 'error',
+                        confirmButtonColor: '#4CAF50',
+                        background: '#DCEDC8'
+                    });
                 }
             } catch (error) {
                 console.error('Error fetching tips:', error);
-                toast.error('Failed to load tips.');
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Failed to load tips',
+                    icon: 'error',
+                    confirmButtonColor: '#4CAF50',
+                    background: '#DCEDC8'
+                });
                 setTips([]); // set empty array on failure
             } finally {
                 setLoading(false);
@@ -38,35 +55,89 @@ const TopTrendingTips = () => {
     const handleLike = async (id) => {
         if (likeInProgress === id) return;
 
+        if (!user) {
+            Swal.fire({
+                title: 'Please Login',
+                text: 'You need to be logged in to like tips',
+                icon: 'info',
+                confirmButtonColor: '#4CAF50',
+                background: '#DCEDC8'
+            });
+            return;
+        }
+
         try {
             setLikeInProgress(id);
-            console.log(`Liking tip with ID: ${id}`);
             
             const res = await fetch(`http://localhost:3000/tips/${id}/like`, {
                 method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    userEmail: user.email
+                })
             });
 
+            const data = await res.json();
+
             if (!res.ok) {
-                throw new Error('Failed to like tip');
+                throw new Error(data.message || 'Failed to like tip');
             }
 
-            const data = await res.json();
-            if (data?.message === 'Like added') {
-                setTips((prevTips) =>
-                    prevTips.map((tip) =>
-                        tip._id === id ? { ...tip, likes: (tip.likes ?? 0) + 1 } : tip
-                    )
-                );
-                toast.success('Liked successfully!');
-            } else {
-                toast.error(data?.message || 'Something went wrong.');
-            }
+            // Update tips state
+            setTips((prevTips) =>
+                prevTips.map((tip) =>
+                    tip._id === id ? { ...tip, likes: (tip.likes ?? 0) + 1 } : tip
+                )
+            );
+
+            // Show success message
+            await Swal.fire({
+                title: 'Success!',
+                text: 'Tip liked successfully',
+                icon: 'success',
+                timer: 1500,
+                showConfirmButton: false,
+                background: '#DCEDC8',
+                iconColor: '#4CAF50'
+            });
+
         } catch (err) {
             console.error('Error liking tip:', err);
-            toast.error('Failed to like. Please try again.');
+            Swal.fire({
+                title: 'Error',
+                text: err.message || 'Failed to like. Please try again.',
+                icon: 'error',
+                confirmButtonColor: '#4CAF50',
+                background: '#DCEDC8'
+            });
         } finally {
             setLikeInProgress(null);
         }
+    };
+
+    const handleSeeDetails = (tipId) => {
+        if (!user) {
+            Swal.fire({
+                title: 'Please Login',
+                text: 'You need to be logged in to view tip details',
+                icon: 'info',
+                confirmButtonColor: '#4CAF50',
+                background: '#DCEDC8',
+                showCancelButton: true,
+                confirmButtonText: 'Login',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Store the intended destination
+                    localStorage.setItem('redirectAfterLogin', `/tip-details/${tipId}`);
+                    navigate('/auth/login');
+                }
+            });
+            return;
+        }
+        navigate(`/tip-details/${tipId}`);
     };
 
     if (loading) {
@@ -92,6 +163,15 @@ const TopTrendingTips = () => {
                             key={tip._id}
                             className="card bg-base-300 shadow-md hover:shadow-xl transition duration-300 border border-primary/10"
                         >
+                            {tip.image && (
+                                <figure className="px-4 pt-4">
+                                    <img 
+                                        src={tip.image} 
+                                        alt={tip.title}
+                                        className="rounded-xl h-48 w-full object-cover"
+                                    />
+                                </figure>
+                            )}
                             <div className="card-body">
                                 <h3 className="card-title text-primary">{tip.title}</h3>
 
@@ -99,9 +179,9 @@ const TopTrendingTips = () => {
                                     by <span className="font-semibold">{tip.author}</span> | {tip.category}
                                 </p>
 
-                                <p className="text-base-content">{tip.content}</p>
+                                <p className="text-base-content line-clamp-2">{tip.description || tip.content}</p>
 
-                                <div className="flex items-center justify-between mt-4">
+                                <div className="flex items-center justify-between mt-4 flex-wrap gap-2">
                                     <span className="badge badge-base-300 text-base-content text-sm">
                                         🗓️ {tip.date ? new Date(tip.date).toLocaleDateString() : 'N/A'}
                                     </span>
@@ -110,16 +190,26 @@ const TopTrendingTips = () => {
                                         👍 {tip.likes ?? 0} likes
                                     </span>
 
-                                    <button
-                                        onClick={() => handleLike(tip._id)}
-                                        disabled={likeInProgress === tip._id}
-                                        className={`btn btn-sm ${likeInProgress === tip._id
-                                                ? 'btn-primary loading'
-                                                : 'btn-outline btn-primary'
+                                    <div className="flex gap-2">
+                                        <button
+                                            onClick={() => handleLike(tip._id)}
+                                            disabled={likeInProgress === tip._id}
+                                            className={`btn btn-sm ${
+                                                likeInProgress === tip._id
+                                                    ? 'btn-primary loading'
+                                                    : 'btn-outline btn-primary'
                                             }`}
-                                    >
-                                        {likeInProgress === tip._id ? 'Liking...' : 'Like'}
-                                    </button>
+                                        >
+                                            {likeInProgress === tip._id ? 'Liking...' : 'Like'}
+                                        </button>
+                                        
+                                        <button 
+                                            onClick={() => handleSeeDetails(tip._id)}
+                                            className="btn btn-primary btn-sm gap-2"
+                                        >
+                                            <FaEye /> Details
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>

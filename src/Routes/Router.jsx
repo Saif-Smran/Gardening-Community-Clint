@@ -10,6 +10,10 @@ import ShareTip from '../Components/ShareTip';
 import BrowseTips from '../Components/BrowseTips';
 import TipDetails from '../Components/TipDetails';
 import ExploreGardeners from '../Components/ExploreGardeners';
+import MyTips from '../Components/MyTips';
+import UpdateTip from '../Components/UpdateTip';
+import NotFound from '../Pages/NotFound';
+import ErrorBoundary from '../Components/ErrorBoundary';
 
 const router = createBrowserRouter([
     {
@@ -26,7 +30,11 @@ const router = createBrowserRouter([
             },
             {
                 path: 'my-tips',
-                element: <PrivateRoute><div>My Tips Page</div></PrivateRoute>
+                element: <PrivateRoute><MyTips /></PrivateRoute>
+            },
+            {
+                path: 'update-tip/:tipId',
+                element: <PrivateRoute><UpdateTip /></PrivateRoute>
             },
             {
                 path: 'explore-gardeners',
@@ -38,23 +46,28 @@ const router = createBrowserRouter([
             },
             {
                 path: 'tip-details/:tipId',
-                element: <TipDetails />
+                element: <PrivateRoute><TipDetails /></PrivateRoute>
             }
         ]
     },
     {
-        path: "/auth",
+        path: "auth",
         element: <AuthLayout />,
         children: [
             {
-                path: '/auth/login',
+                path: 'login',
                 element: <Login />
             },
             {
-                path: '/auth/register',
+                path: 'register',
                 element: <Register />
             }
         ]
+    },
+    {
+        path: '*',
+        element: <NotFound />,
+        errorElement: <ErrorBoundary />
     }
 ]);
 

@@ -1,7 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../providers/AuthProvider';
-import { toast } from 'react-hot-toast';
 import { FaGoogle } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 
@@ -11,6 +10,7 @@ const Login = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const from = location?.state?.from?.pathname || "/";
+    const [loadingState, setLoading] = useState(false);
 
     if (loading) {
         return (
@@ -22,29 +22,44 @@ const Login = () => {
 
     const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
-    const handleSubmit = async (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
+        const form = e.target;
+        const email = form.email.value;
+        const password = form.password.value;
+
         try {
-            await login(form.email, form.password);
+            setLoading(true);
+            await login(email, password);
+            
             await Swal.fire({
                 title: 'Welcome back! 🌱',
-                text: 'Successfully logged in to GardenGlow',
+                text: 'Successfully logged in',
                 icon: 'success',
-                showConfirmButton: false,
                 timer: 1500,
+                showConfirmButton: false,
                 background: '#DCEDC8',
                 iconColor: '#4CAF50'
             });
-            navigate(from, { replace: true });
+            
+            // Check for redirect URL
+            const redirectUrl = localStorage.getItem('redirectAfterLogin');
+            // Clear the stored redirect URL
+            localStorage.removeItem('redirectAfterLogin');
+            
+            // Navigate to the redirect URL if it exists, otherwise go to home
+            navigate(redirectUrl || '/');
         } catch (error) {
+            console.error('Login error:', error);
             Swal.fire({
-                title: 'Oops!',
-                text: error.message,
+                title: 'Login Failed',
+                text: error.message || 'Failed to login. Please try again.',
                 icon: 'error',
-                confirmButtonText: 'Try Again',
                 confirmButtonColor: '#4CAF50',
                 background: '#DCEDC8'
             });
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -55,18 +70,21 @@ const Login = () => {
                 title: 'Welcome to GardenGlow! 🌱',
                 text: 'Successfully signed in with Google',
                 icon: 'success',
-                showConfirmButton: false,
                 timer: 1500,
+                showConfirmButton: false,
                 background: '#DCEDC8',
                 iconColor: '#4CAF50'
             });
-            navigate(from, { replace: true });
+            
+            // Check for redirect URL after Google login too
+            const redirectUrl = localStorage.getItem('redirectAfterLogin');
+            localStorage.removeItem('redirectAfterLogin');
+            navigate(redirectUrl || from, { replace: true });
         } catch (error) {
             Swal.fire({
-                title: 'Oops!',
-                text: error.message,
+                title: 'Login Failed',
+                text: error.message || 'Failed to login with Google',
                 icon: 'error',
-                confirmButtonText: 'Try Again',
                 confirmButtonColor: '#4CAF50',
                 background: '#DCEDC8'
             });
@@ -83,7 +101,7 @@ const Login = () => {
                             <p className="text-base-content/70 mt-2">Please login to your account</p>
                         </div>
                         
-                        <form onSubmit={handleSubmit} className="space-y-4">
+                        <form onSubmit={handleLogin} className="space-y-4">
                             <div>
                                 <label className="label">
                                     <span className="label-text">Email</span>
