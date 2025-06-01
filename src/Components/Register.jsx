@@ -1,7 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../providers/AuthProvider';
-import { toast } from 'react-hot-toast';
 import { FaGoogle, FaCheck, FaTimes } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 
@@ -19,14 +18,6 @@ const Register = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const from = location?.state?.from?.pathname || "/";
-
-    if (loading) {
-        return (
-            <div className="min-h-[calc(100vh-200px)] flex items-center justify-center">
-                <span className="loading loading-spinner loading-lg text-primary"></span>
-            </div>
-        );
-    }
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -64,6 +55,31 @@ const Register = () => {
         return true;
     };
 
+    const saveUserToBackend = async (userData) => {
+        try {
+            const response = await fetch('http://localhost:3000/users', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: userData.name,
+                    email: userData.email,
+                    photoURL: userData.photoURL,
+                    creationTime: new Date().toISOString(),
+                    lastSignInTime: new Date().toISOString()
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to save user data');
+            }
+        } catch (error) {
+            console.error('Error saving user to backend:', error);
+            throw error;
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         
@@ -79,7 +95,13 @@ const Register = () => {
                     displayName: form.name,
                     photoURL: form.photoURL || 'https://i.ibb.co/5GzXkwq/user.png'
                 });
-                
+
+                await saveUserToBackend({
+                    name: form.name,
+                    email: form.email,
+                    photoURL: form.photoURL || 'https://i.ibb.co/5GzXkwq/user.png'
+                });
+
                 await Swal.fire({
                     title: 'Welcome to GardenGlow! 🌱',
                     text: 'Your account has been created successfully',
@@ -106,17 +128,25 @@ const Register = () => {
 
     const handleGoogleSignUp = async () => {
         try {
-            await googleLogin();
-            await Swal.fire({
-                title: 'Welcome to GardenGlow! 🌱',
-                text: 'Successfully signed in with Google',
-                icon: 'success',
-                showConfirmButton: false,
-                timer: 1500,
-                background: '#DCEDC8',
-                iconColor: '#4CAF50'
-            });
-            navigate(from, { replace: true });
+            const result = await googleLogin();
+            if (result?.user) {
+                await saveUserToBackend({
+                    name: result.user.displayName,
+                    email: result.user.email,
+                    photoURL: result.user.photoURL
+                });
+
+                await Swal.fire({
+                    title: 'Welcome to GardenGlow! 🌱',
+                    text: 'Successfully signed in with Google',
+                    icon: 'success',
+                    showConfirmButton: false,
+                    timer: 1500,
+                    background: '#DCEDC8',
+                    iconColor: '#4CAF50'
+                });
+                navigate(from, { replace: true });
+            }
         } catch (error) {
             Swal.fire({
                 title: 'Sign Up Failed',
@@ -140,6 +170,14 @@ const Register = () => {
         </div>
     );
 
+    if (loading) {
+        return (
+            <div className="min-h-[calc(100vh-200px)] flex items-center justify-center">
+                <span className="loading loading-spinner loading-lg text-primary"></span>
+            </div>
+        );
+    }
+
     return (
         <section className="py-20">
             <div className="container mx-auto px-4">
@@ -159,6 +197,7 @@ const Register = () => {
                                     name="name" 
                                     type="text" 
                                     placeholder="John Doe" 
+                                    value={form.name}
                                     onChange={handleChange} 
                                     className="input input-bordered w-full focus:border-primary" 
                                     required 
@@ -172,7 +211,8 @@ const Register = () => {
                                 <input 
                                     name="email" 
                                     type="email" 
-                                    placeholder="your@email.com" 
+                                    placeholder="your@email.com"
+                                    value={form.email}
                                     onChange={handleChange} 
                                     className="input input-bordered w-full focus:border-primary" 
                                     required 
@@ -186,19 +226,17 @@ const Register = () => {
                                 <input 
                                     name="password" 
                                     type="password" 
-                                    placeholder="••••••••" 
+                                    placeholder="••••••••"
+                                    value={form.password}
                                     onChange={handleChange}
-                                    onFocus={() => setShowPasswordReqs(true)}
-                                    onBlur={() => {
-                                        setShowPasswordReqs(false);
-                                        if (!form.password) {
-                                            setIsTypingPassword(false);
-                                        }
+                                    onFocus={() => {
+                                        setShowPasswordReqs(true);
+                                        setIsTypingPassword(true);
                                     }}
                                     className="input input-bordered w-full focus:border-primary" 
                                     required 
                                 />
-                                {(showPasswordReqs && isTypingPassword) && (
+                                {isTypingPassword && (
                                     <div className="mt-2 p-3 bg-base-200 rounded-lg space-y-1">
                                         <PasswordRequirement 
                                             met={passwordChecks.length} 
@@ -227,7 +265,8 @@ const Register = () => {
                                 <input 
                                     name="photoURL" 
                                     type="text" 
-                                    placeholder="https://example.com/your-photo.jpg" 
+                                    placeholder="https://example.com/your-photo.jpg"
+                                    value={form.photoURL}
                                     onChange={handleChange} 
                                     className="input input-bordered w-full focus:border-primary" 
                                 />
@@ -236,8 +275,13 @@ const Register = () => {
                             <button 
                                 type="submit" 
                                 className="btn btn-primary w-full"
+                                disabled={loading}
                             >
-                                Create Account
+                                {loading ? (
+                                    <span className="loading loading-spinner loading-sm"></span>
+                                ) : (
+                                    'Create Account'
+                                )}
                             </button>
                         </form>
 
@@ -246,6 +290,7 @@ const Register = () => {
                         <button 
                             onClick={handleGoogleSignUp}
                             className="btn btn-outline w-full gap-2 mb-4 hover:bg-primary hover:text-white"
+                            disabled={loading}
                         >
                             <FaGoogle className="text-xl" /> Continue with Google
                         </button>

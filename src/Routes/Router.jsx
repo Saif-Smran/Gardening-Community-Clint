@@ -6,6 +6,10 @@ import Register from '../Components/Register';
 import Login from '../Components/Login';
 import AuthLayout from '../Layouts/AuthLayout';
 import PrivateRoute from './PrivateRoute';
+import ShareTip from '../Components/ShareTip';
+import BrowseTips from '../Components/BrowseTips';
+import TipDetails from '../Components/TipDetails';
+import ExploreGardeners from '../Components/ExploreGardeners';
 
 const router = createBrowserRouter([
     {
@@ -18,7 +22,7 @@ const router = createBrowserRouter([
             },
             {
                 path: 'share-tip',
-                element: <PrivateRoute><div>Share Tip Page</div></PrivateRoute>
+                element: <PrivateRoute><ShareTip /></PrivateRoute>
             },
             {
                 path: 'my-tips',
@@ -26,7 +30,15 @@ const router = createBrowserRouter([
             },
             {
                 path: 'explore-gardeners',
-                element: <PrivateRoute><div>Explore Gardeners Page</div></PrivateRoute>
+                element: <ExploreGardeners />
+            },
+            {
+                path: 'browse-tips',
+                element: <BrowseTips />
+            },
+            {
+                path: 'tip-details/:tipId',
+                element: <TipDetails />
             }
         ]
     },
