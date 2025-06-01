@@ -1,12 +1,22 @@
-# React + Vite
+# 🌿 GardenGlow - Gardening Community
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Live Site:** [https://gardening-community-cffec.web.app/](https://gardening-community-cffec.web.app/)
 
-Currently, two official plugins are available:
+## 🌟 Project Description
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+**GardenGlow** is a vibrant community web application built for gardening enthusiasts. Users can explore gardening tips, connect with fellow gardeners, and share their own knowledge through tips and guides. Whether you're a beginner or a seasoned green thumb, GardenGlow offers a friendly platform to grow and glow together.
 
-## Expanding the ESLint configuration
+## 🚀 Key Features
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- 🧱 **Responsive Layout with Theme Toggle:** Clean, modern UI with dark/light mode support and user-friendly navigation.
+- 🔐 **Authentication System:** Email/password and Google pop-up login & registration using Firebase.
+- 🏡 **Dynamic Home Page:** Features a slider banner, active gardener profiles, and trending tips from the database.
+- 🌱 **Full CRUD on Garden Tips:** Users can create, read, update, and delete their garden tips. Only public tips are shown to others.
+- 📊 **Tips Filtering and Like System:** Filter tips by difficulty level and like your favorites — likes are stored in the database.
+- 👥 **Explore Gardeners Page:** Showcases gardener profiles with real-time data like experience and shared tips count.
+- 🎬 **Bonus Integrations:** Includes Lottie React animations and React Simple Typewriter for enhanced UI/UX.
+- ❌ **404 Page and Loading States:** Custom not-found page and elegant loading spinners during data fetching.
+
+---
+
+Feel free to contribute or fork the project to create your own gardening hub! 🌸

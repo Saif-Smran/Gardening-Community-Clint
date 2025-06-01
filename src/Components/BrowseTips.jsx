@@ -5,7 +5,6 @@ import { FaHeart, FaComment, FaShare, FaEye } from 'react-icons/fa';
 import { AuthContext } from '../providers/AuthProvider';
 import { useNavigate } from 'react-router-dom';
 import LoadingSpinner from './LoadingSpinner';
-import TopTrendingTips from './TopTrendingTips';
 
 const BrowseTips = () => {
     const { user } = useContext(AuthContext);
@@ -160,7 +159,6 @@ const BrowseTips = () => {
                 <meta name="keywords" content="gardening tips, plant care, garden advice, community tips, gardening help" />
             </Helmet>
             <div className="w-full sm:w-11/12 max-w-7xl mx-auto">
-                <TopTrendingTips />
                 
                 <h2 className="text-2xl sm:text-3xl font-bold text-center text-primary mb-2">Browse Garden Tips 🌿</h2>
                 <p className="text-center text-base-content/70 mb-6 sm:mb-8">Discover and learn from our community's gardening wisdom</p>
