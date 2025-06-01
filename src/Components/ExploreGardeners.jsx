@@ -7,7 +7,8 @@ const ExploreGardeners = () => {
     const [filter, setFilter] = useState({
         experience: 'all',
         status: 'all',
-        gender: 'all'
+        gender: 'all',
+        sortBy: 'experience'
     });
 
     useEffect(() => {
@@ -18,11 +19,12 @@ const ExploreGardeners = () => {
         try {
             let url = 'http://localhost:3000/gardeners';
             
-            // Add filters if selected
+            // Add filters and sorting
             const params = new URLSearchParams();
             if (filter.experience !== 'all') params.append('experience', filter.experience);
             if (filter.status !== 'all') params.append('status', filter.status);
             if (filter.gender !== 'all') params.append('gender', filter.gender);
+            if (filter.sortBy) params.append('sortBy', filter.sortBy);
             
             if (params.toString()) {
                 url += `?${params.toString()}`;
@@ -64,8 +66,18 @@ const ExploreGardeners = () => {
                     Connect with passionate gardeners from our community
                 </p>
 
-                {/* Filters */}
+                {/* Filters and Sorting */}
                 <div className="flex flex-wrap gap-4 mb-8 justify-center">
+                    <select 
+                        className="select select-bordered select-primary"
+                        value={filter.sortBy}
+                        onChange={(e) => setFilter({...filter, sortBy: e.target.value})}
+                    >
+                        <option value="experience">Sort by Experience</option>
+                        <option value="totalTips">Sort by Total Tips</option>
+                        <option value="likesReceived">Sort by Likes Received</option>
+                    </select>
+
                     <select 
                         className="select select-bordered select-primary"
                         value={filter.experience}
@@ -74,8 +86,8 @@ const ExploreGardeners = () => {
                         <option value="all">All Experience Levels</option>
                         <option value="beginner">Beginner (0-2 years)</option>
                         <option value="intermediate">Intermediate (3-5 years)</option>
-                        <option value="experienced">Experienced (5-10 years)</option>
-                        <option value="expert">Expert (10+ years)</option>
+                        <option value="experienced">Experienced (6-10 years)</option>
+                        <option value="expert">Expert (11+ years)</option>
                     </select>
 
                     <select 

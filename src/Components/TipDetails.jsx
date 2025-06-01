@@ -50,18 +50,7 @@ const TipDetails = () => {
             return;
         }
 
-        // Store original state for rollback
-        const originalTip = { ...tip };
-        const isCurrentlyLiked = tip?.likedBy?.includes(user.email);
-
-        // Optimistically update UI
-        setTip(prev => ({
-            ...prev,
-            likes: isCurrentlyLiked ? (prev?.likes - 1) : ((prev?.likes || 0) + 1),
-            likedBy: isCurrentlyLiked
-                ? prev.likedBy.filter(email => email !== user.email)
-                : [...(prev?.likedBy || []), user.email]
-        }));
+        const isCurrentlyLiked = isLikedByUser();
 
         try {
             const response = await fetch(`http://localhost:3000/tips/${tipId}/like`, {
@@ -75,23 +64,45 @@ const TipDetails = () => {
             });
             
             if (!response.ok) {
-                throw new Error('Failed to update like');
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to update like');
             }
             
             const data = await response.json();
-            setTip(prev => ({ ...prev, likes: data.likes, likedBy: data.likedBy }));
+            
+            // Update tip state with the new data
+            setTip(prev => ({
+                ...prev,
+                likes: data.likes,
+                likedBy: data.likedBy
+            }));
+
+            // Show success message
+            await Swal.fire({
+                title: isCurrentlyLiked ? 'Unliked!' : 'Liked!',
+                text: isCurrentlyLiked ? 'You have removed your like' : 'You have liked this tip',
+                icon: 'success',
+                timer: 1500,
+                showConfirmButton: false,
+                background: '#DCEDC8',
+                iconColor: '#4CAF50',
+                position: 'top-end',
+                toast: true
+            });
 
         } catch (error) {
             console.error('Error liking tip:', error);
-            // Revert to original state on error
-            setTip(originalTip);
             
             Swal.fire({
                 title: 'Error',
-                text: 'Failed to update like status. Please try again.',
+                text: error.message || 'Failed to update like status. Please try again.',
                 icon: 'error',
                 confirmButtonColor: '#4CAF50',
-                background: '#DCEDC8'
+                background: '#DCEDC8',
+                position: 'top-end',
+                toast: true,
+                timer: 3000,
+                showConfirmButton: false
             });
         }
     };
