@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { Helmet } from 'react-helmet-async';
 import Swal from 'sweetalert2';
 import { FaHeart, FaComment, FaShare, FaEye } from 'react-icons/fa';
 import { AuthContext } from '../providers/AuthProvider';
 import { useNavigate } from 'react-router-dom';
 import LoadingSpinner from './LoadingSpinner';
+import TopTrendingTips from './TopTrendingTips';
 
 const BrowseTips = () => {
     const { user } = useContext(AuthContext);
@@ -62,83 +64,61 @@ const BrowseTips = () => {
     const handleLike = async (tipId) => {
         if (!user) {
             Swal.fire({
-                title: 'Please Login',
-                text: 'You need to be logged in to like tips',
-                icon: 'info',
-                confirmButtonColor: '#4CAF50',
-                background: '#DCEDC8'
+                title: 'Login Required',
+                text: 'Please login to like tips',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Login now'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    navigate('/login');
+                }
             });
             return;
         }
-
-        // Store original state for rollback
-        const originalTips = [...tips];
-        const tipToUpdate = tips.find(tip => tip._id === tipId);
-        const isCurrentlyLiked = tipToUpdate.likedBy?.includes(user.email);
-
-        // Optimistically update UI
-        setTips(tips.map(tip => {
-            if (tip._id === tipId) {
-                return {
-                    ...tip,
-                    likes: isCurrentlyLiked ? (tip.likes - 1) : (tip.likes + 1),
-                    likedBy: isCurrentlyLiked 
-                        ? tip.likedBy.filter(email => email !== user.email)
-                        : [...(tip.likedBy || []), user.email]
-                };
-            }
-            return tip;
-        }));
 
         try {
             const response = await fetch(`http://localhost:3000/tips/${tipId}/like`, {
                 method: 'PATCH',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    userEmail: user.email
-                })
+                body: JSON.stringify({ userEmail: user.email })
             });
-            
-            if (!response.ok) {
-                throw new Error('Failed to update like');
-            }
+
+            if (!response.ok) throw new Error('Failed to update like');
             
             const data = await response.json();
             
-            // Update with actual server data
+            // Update tips state with new likes count
             setTips(tips.map(tip => 
-                tip._id === tipId ? { ...tip, likes: data.likes, likedBy: data.likedBy } : tip
+                tip._id === tipId 
+                    ? { ...tip, likes: data.likes, likedBy: data.likedBy }
+                    : tip
             ));
 
-            await Swal.fire({
-                title: 'Success!',
-                text: 'Tip liked successfully',
-                icon: 'success',
-                timer: 1500,
-                showConfirmButton: false,
-                background: '#DCEDC8',
-                iconColor: '#4CAF50'
-            });
-
-        } catch (error) {
-            console.error('Error liking tip:', error);
-            // Revert to original state on error
-            setTips(originalTips);
-            
+            // Show success message
+            const message = data.message === 'Like added' ? 'Tip liked!' : 'Like removed';
             Swal.fire({
-                title: 'Error',
-                text: 'Failed to update like status. Please try again.',
+                icon: 'success',
+                title: message,
+                showConfirmButton: false,
+                timer: 1500
+            });
+        } catch (error) {
+            console.error('Error updating like:', error);
+            Swal.fire({
                 icon: 'error',
-                confirmButtonColor: '#4CAF50',
-                background: '#DCEDC8'
+                title: 'Oops...',
+                text: 'Failed to update like'
             });
         }
     };
 
     const isLikedByUser = (tip) => {
-        return tip.likedBy?.includes(user?.email);
+        return user && tip.likedBy?.includes(user.email);
     };
 
     const handleSeeDetails = (tipId) => {
@@ -174,7 +154,14 @@ const BrowseTips = () => {
 
     return (
         <div className="min-h-[calc(100vh-200px)] py-10 px-4">
+            <Helmet>
+                <title>Browse Tips - GardenGlow</title>
+                <meta name="description" content="Explore gardening tips and tricks shared by our community. Find advice on plant care, composting, pest control, and more." />
+                <meta name="keywords" content="gardening tips, plant care, garden advice, community tips, gardening help" />
+            </Helmet>
             <div className="max-w-7xl mx-auto">
+                <TopTrendingTips />
+                
                 <h2 className="text-3xl font-bold text-center text-primary mb-2">Browse Garden Tips 🌿</h2>
                 <p className="text-center text-base-content/70 mb-8">Discover and learn from our community's gardening wisdom</p>
 
@@ -196,7 +183,7 @@ const BrowseTips = () => {
                         <option value="Water Management">Water Management</option>
                     </select>
 
-                    <select 
+                    {/* <select 
                         className="select select-bordered select-primary"
                         value={filter.difficulty}
                         onChange={(e) => setFilter({...filter, difficulty: e.target.value})}
@@ -205,7 +192,7 @@ const BrowseTips = () => {
                         <option value="Easy">Easy</option>
                         <option value="Medium">Medium</option>
                         <option value="Hard">Hard</option>
-                    </select>
+                    </select> */}
 
                     <select 
                         className="select select-bordered select-primary"
@@ -301,8 +288,10 @@ const BrowseTips = () => {
                                         <div className="flex justify-between items-center w-full">
                                             <div className="flex gap-4">
                                                 <button 
-                                                    className={`btn btn-ghost btn-sm gap-2 ${isLikedByUser(tip) ? 'text-red-500' : 'hover:text-red-500'}`}
+                                                    className={`btn btn-ghost btn-sm gap-2 ${!user ? 'btn-disabled' : ''} ${isLikedByUser(tip) ? 'text-red-500' : 'hover:text-red-500'}`}
                                                     onClick={() => handleLike(tip._id)}
+                                                    disabled={!user}
+                                                    title={!user ? 'Login to like tips' : ''}
                                                 >
                                                     <FaHeart className={isLikedByUser(tip) ? 'text-red-500' : 'text-gray-400'} />
                                                     {tip.likes || 0}

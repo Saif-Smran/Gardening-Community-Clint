@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { FaEdit, FaTrash, FaEye } from 'react-icons/fa';
 import { AuthContext } from '../providers/AuthProvider';
@@ -95,6 +96,11 @@ const MyTips = () => {
 
     return (
         <div className="min-h-[calc(100vh-200px)] py-10 px-4">
+            <Helmet>
+                <title>My Garden Tips - GardenGlow</title>
+                <meta name="description" content="Manage your gardening tips, track their performance, and share your gardening knowledge with the community." />
+                <meta name="keywords" content="my tips, gardening advice, personal garden tips, tip management" />
+            </Helmet>
             <div className="max-w-7xl mx-auto">
                 <h2 className="text-3xl font-bold text-center text-primary mb-2">
                     My Garden Tips 🌿

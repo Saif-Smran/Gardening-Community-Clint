@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useParams, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import LoadingSpinner from './LoadingSpinner';
@@ -105,6 +106,11 @@ const UpdateTip = () => {
 
     return (
         <div className="min-h-[calc(100vh-200px)] py-10 px-4">
+            <Helmet>
+                <title>{formData.title ? `Edit: ${formData.title} - GardenGlow` : 'Edit Tip - GardenGlow'}</title>
+                <meta name="description" content="Update your gardening tip and improve your contribution to the GardenGlow community." />
+                <meta name="keywords" content="edit tip, update gardening advice, improve garden tip" />
+            </Helmet>
             <div className="max-w-2xl mx-auto bg-base-300 p-6 rounded-lg shadow-xl">
                 <h3 className="text-2xl font-bold text-primary mb-4">Update Tip</h3>
                 

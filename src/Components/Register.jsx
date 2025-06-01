@@ -1,4 +1,5 @@
 import React, { useContext, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../providers/AuthProvider';
 import { FaGoogle, FaCheck, FaTimes } from 'react-icons/fa';
@@ -179,137 +180,138 @@ const Register = () => {
     }
 
     return (
-        <section className="py-20">
-            <div className="container mx-auto px-4">
-                <div className="flex justify-center">
-                    <div className="max-w-md w-full p-8 bg-base-300 shadow-xl rounded-xl border border-primary/10">
-                        <div className="text-center mb-8">
-                            <h2 className="text-3xl font-bold text-primary">Join GardenGlow 🌿</h2>
-                            <p className="text-base-content/70 mt-2">Create your gardening account</p>
-                        </div>
-                        
-                        <form onSubmit={handleSubmit} className="space-y-4">
-                            <div>
-                                <label className="label">
-                                    <span className="label-text">Full Name</span>
-                                </label>
-                                <input 
-                                    name="name" 
-                                    type="text" 
-                                    placeholder="John Doe" 
-                                    value={form.name}
-                                    onChange={handleChange} 
-                                    className="input input-bordered w-full focus:border-primary" 
-                                    required 
-                                />
-                            </div>
-
-                            <div>
-                                <label className="label">
-                                    <span className="label-text">Email</span>
-                                </label>
-                                <input 
-                                    name="email" 
-                                    type="email" 
-                                    placeholder="your@email.com"
-                                    value={form.email}
-                                    onChange={handleChange} 
-                                    className="input input-bordered w-full focus:border-primary" 
-                                    required 
-                                />
-                            </div>
-
-                            <div>
-                                <label className="label">
-                                    <span className="label-text">Password</span>
-                                </label>
-                                <input 
-                                    name="password" 
-                                    type="password" 
-                                    placeholder="••••••••"
-                                    value={form.password}
-                                    onChange={handleChange}
-                                    onFocus={() => {
-                                        setShowPasswordReqs(true);
-                                        setIsTypingPassword(true);
-                                    }}
-                                    className="input input-bordered w-full focus:border-primary" 
-                                    required 
-                                />
-                                {isTypingPassword && (
-                                    <div className="mt-2 p-3 bg-base-200 rounded-lg space-y-1">
-                                        <PasswordRequirement 
-                                            met={passwordChecks.length} 
-                                            text="At least 8 characters" 
-                                        />
-                                        <PasswordRequirement 
-                                            met={passwordChecks.uppercase} 
-                                            text="One uppercase letter" 
-                                        />
-                                        <PasswordRequirement 
-                                            met={passwordChecks.lowercase} 
-                                            text="One lowercase letter" 
-                                        />
-                                        <PasswordRequirement 
-                                            met={passwordChecks.special} 
-                                            text="One special character (!@#$%^&*)" 
-                                        />
-                                    </div>
-                                )}
-                            </div>
-
-                            <div>
-                                <label className="label">
-                                    <span className="label-text">Profile Photo URL (Optional)</span>
-                                </label>
-                                <input 
-                                    name="photoURL" 
-                                    type="text" 
-                                    placeholder="https://example.com/your-photo.jpg"
-                                    value={form.photoURL}
-                                    onChange={handleChange} 
-                                    className="input input-bordered w-full focus:border-primary" 
-                                />
-                            </div>
-
-                            <button 
-                                type="submit" 
-                                className="btn btn-primary w-full"
-                                disabled={loading}
-                            >
-                                {loading ? (
-                                    <span className="loading loading-spinner loading-sm"></span>
-                                ) : (
-                                    'Create Account'
-                                )}
-                            </button>
-                        </form>
-
-                        <div className="divider">OR</div>
-
-                        <button 
-                            onClick={handleGoogleSignUp}
-                            className="btn btn-outline w-full gap-2 mb-4 hover:bg-primary hover:text-white"
-                            disabled={loading}
-                        >
-                            <FaGoogle className="text-xl" /> Continue with Google
-                        </button>
-
-                        <div className="text-center space-y-4">
-                            <p className="text-sm">
-                                Already have an account? {" "}
-                                <Link 
-                                    to="/auth/login" 
-                                    className="text-primary hover:underline"
-                                >
-                                    Login here
-                                </Link>
-                            </p>
-                        </div>
+        <div className="min-h-[calc(100vh-200px)] flex items-center justify-center py-10 px-4">
+            <Helmet>
+                <title>Join GardenGlow - Create Account</title>
+                <meta name="description" content="Join the GardenGlow community! Create your account to share gardening tips, connect with fellow gardeners, and grow your knowledge." />
+                <meta name="keywords" content="register, sign up, create account, join gardening community" />
+            </Helmet>
+            <div className="max-w-md w-full space-y-8 bg-base-300 p-8 rounded-xl shadow-lg border border-primary/10">
+                <div className="text-center">
+                    <h2 className="text-3xl font-bold text-primary">Join Our Garden! 🌱</h2>
+                    <p className="mt-2 text-base-content/70">Create your account and start your gardening journey</p>
+                </div>
+                
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    <div>
+                        <label className="label">
+                            <span className="label-text">Full Name</span>
+                        </label>
+                        <input 
+                            name="name" 
+                            type="text" 
+                            placeholder="John Doe" 
+                            value={form.name}
+                            onChange={handleChange} 
+                            className="input input-bordered w-full focus:border-primary" 
+                            required 
+                        />
                     </div>
+
+                    <div>
+                        <label className="label">
+                            <span className="label-text">Email</span>
+                        </label>
+                        <input 
+                            name="email" 
+                            type="email" 
+                            placeholder="your@email.com"
+                            value={form.email}
+                            onChange={handleChange} 
+                            className="input input-bordered w-full focus:border-primary" 
+                            required 
+                        />
+                    </div>
+
+                    <div>
+                        <label className="label">
+                            <span className="label-text">Password</span>
+                        </label>
+                        <input 
+                            name="password" 
+                            type="password" 
+                            placeholder="••••••••"
+                            value={form.password}
+                            onChange={handleChange}
+                            onFocus={() => {
+                                setShowPasswordReqs(true);
+                                setIsTypingPassword(true);
+                            }}
+                            className="input input-bordered w-full focus:border-primary" 
+                            required 
+                        />
+                        {isTypingPassword && (
+                            <div className="mt-2 p-3 bg-base-200 rounded-lg space-y-1">
+                                <PasswordRequirement 
+                                    met={passwordChecks.length} 
+                                    text="At least 8 characters" 
+                                />
+                                <PasswordRequirement 
+                                    met={passwordChecks.uppercase} 
+                                    text="One uppercase letter" 
+                                />
+                                <PasswordRequirement 
+                                    met={passwordChecks.lowercase} 
+                                    text="One lowercase letter" 
+                                />
+                                <PasswordRequirement 
+                                    met={passwordChecks.special} 
+                                    text="One special character (!@#$%^&*)" 
+                                />
+                            </div>
+                        )}
+                    </div>
+
+                    <div>
+                        <label className="label">
+                            <span className="label-text">Profile Photo URL (Optional)</span>
+                        </label>
+                        <input 
+                            name="photoURL" 
+                            type="text" 
+                            placeholder="https://example.com/your-photo.jpg"
+                            value={form.photoURL}
+                            onChange={handleChange} 
+                            className="input input-bordered w-full focus:border-primary" 
+                        />
+                    </div>
+
+                    <button 
+                        type="submit" 
+                        className="btn btn-primary w-full"
+                        disabled={loading}
+                    >
+                        {loading ? (
+                            <span className="loading loading-spinner loading-sm"></span>
+                        ) : (
+                            'Create Account'
+                        )}
+                    </button>
+                </form>
+
+                <div className="divider">OR</div>
+
+                <button 
+                    onClick={handleGoogleSignUp}
+                    className="btn btn-outline w-full gap-2 mb-4 hover:bg-primary hover:text-white"
+                    disabled={loading}
+                >
+                    <FaGoogle className="text-xl" /> Continue with Google
+                </button>
+
+                <div className="text-center space-y-4">
+                    <p className="text-sm">
+                        Already have an account? {" "}
+                        <Link 
+                            to="/auth/login" 
+                            className="text-primary hover:underline"
+                        >
+                            Login here
+                        </Link>
+                    </p>
                 </div>
             </div>
-        </section>
+        </div>
     );
 };
 

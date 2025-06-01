@@ -1,7 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { FaSeedling, FaLeaf, FaHeart } from 'react-icons/fa';
+import { AuthContext } from '../providers/AuthProvider';
+import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom';
+import LoadingAnimation from './LoadingAnimation';
 
 const ExploreGardeners = () => {
+    const { user } = useContext(AuthContext);
+    const navigate = useNavigate();
     const [gardeners, setGardeners] = useState([]);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState({
@@ -17,9 +24,9 @@ const ExploreGardeners = () => {
 
     const fetchGardeners = async () => {
         try {
+            setLoading(true);
             let url = 'http://localhost:3000/gardeners';
             
-            // Add filters and sorting
             const params = new URLSearchParams();
             if (filter.experience !== 'all') params.append('experience', filter.experience);
             if (filter.status !== 'all') params.append('status', filter.status);
@@ -34,7 +41,18 @@ const ExploreGardeners = () => {
             if (!response.ok) throw new Error('Failed to fetch gardeners');
             
             const data = await response.json();
-            setGardeners(data);
+            
+            // Process numeric values
+            const processedData = data.map(gardener => ({
+                ...gardener,
+                experience: getNumericValue(gardener.experience),
+                totalTips: getNumericValue(gardener.totalTips),
+                sharedTips: getNumericValue(gardener.sharedTips),
+                likesReceived: getNumericValue(gardener.likesReceived),
+                age: getNumericValue(gardener.age)
+            }));
+            
+            setGardeners(processedData);
         } catch (error) {
             console.error('Error fetching gardeners:', error);
         } finally {
@@ -43,21 +61,65 @@ const ExploreGardeners = () => {
     };
 
     const getExperienceBadgeColor = (experience) => {
-        if (experience >= 10) return 'badge-success';
-        if (experience >= 5) return 'badge-warning';
+        const expNum = Number(experience);
+        if (expNum >= 10) return 'badge-success';
+        if (expNum >= 5) return 'badge-warning';
         return 'badge-info';
     };
 
+    const formatSpecialization = (specialization) => {
+        if (!specialization) return '';
+        return specialization
+            .split(/[-\s]/)
+            .filter(word => word.length > 0)
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+            .join(' ');
+    };
+
+    const getNumericValue = (value) => {
+        if (!value) return 0;
+        if (typeof value === 'object' && '$numberInt' in value) {
+            return Number(value.$numberInt);
+        }
+        if (typeof value === 'string') {
+            return Number(value) || 0;
+        }
+        return Number(value) || 0;
+    };
+
+    const handleLike = async (gardenerId) => {
+        if (!user) {
+            Swal.fire({
+                title: 'Login Required',
+                text: 'Please login to like gardeners',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Login now'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    navigate('/login');
+                }
+            });
+            return;
+        }
+
+        // Add your like functionality here
+        // This is where you would make the API call to update likes
+    };
+
     if (loading) {
-        return (
-            <div className="min-h-[calc(100vh-200px)] flex items-center justify-center">
-                <span className="loading loading-spinner loading-lg text-primary"></span>
-            </div>
-        );
+        return <LoadingAnimation />;
     }
 
     return (
         <div className="min-h-[calc(100vh-200px)] py-10 px-4">
+            <Helmet>
+                <title>Explore Gardeners - GardenGlow</title>
+                <meta name="description" content="Connect with passionate gardeners from our community. Find experts, share experiences, and learn from fellow garden enthusiasts." />
+                <meta name="keywords" content="gardeners, garden experts, community members, gardening network, plant enthusiasts" />
+            </Helmet>
             <div className="max-w-7xl mx-auto">
                 <h2 className="text-3xl font-bold text-center text-primary mb-2">
                     Explore Gardeners <FaSeedling className="inline-block ml-2" />
@@ -152,18 +214,20 @@ const ExploreGardeners = () => {
                                     <div className="space-y-2">
                                         <div className="flex justify-between items-center text-sm">
                                             <span className="text-base-content/70">Total Tips</span>
-                                            <span className="font-semibold badge badge-neutral">{gardener?.totalTips || 0}</span>
+                                            <span className="font-semibold badge badge-neutral">{gardener.totalTips}</span>
                                         </div>
                                         <div className="flex justify-between items-center text-sm">
                                             <span className="text-base-content/70">Likes</span>
                                             <span className="font-semibold badge badge-neutral flex items-center gap-1">
-                                                <FaHeart className="text-red-500" /> {gardener?.likesReceived || 0}
+                                                <FaHeart className="text-red-500" /> {gardener.likesReceived}
                                             </span>
                                         </div>
                                         {gardener.specialization && (
                                             <div className="flex justify-between items-center text-sm">
                                                 <span className="text-base-content/70">Specialization</span>
-                                                <span className="font-semibold truncate ml-2 max-w-[150px] badge badge-neutral">{gardener.specialization}</span>
+                                                <span className="font-semibold text-right ml-2 max-w-[280px] py-3 text-center badge badge-neutral">
+                                                    {formatSpecialization(gardener.specialization)}
+                                                </span>
                                             </div>
                                         )}
                                     </div>
@@ -176,7 +240,15 @@ const ExploreGardeners = () => {
                                     </div>
 
                                     <div className="card-actions justify-end mt-3">
-                                        <button className="btn btn-primary btn-sm">View Profile</button>
+                                        <button 
+                                            className={`btn ${user ? 'btn-primary' : 'btn-disabled'} btn-sm`}
+                                            onClick={() => handleLike(gardener._id)}
+                                            disabled={!user}
+                                            title={!user ? 'Login to like gardeners' : ''}
+                                        >
+                                            <FaHeart className={user ? 'text-white' : 'text-gray-400'} />
+                                            Like
+                                        </button>
                                         <button className="btn btn-outline btn-sm">Follow</button>
                                     </div>
                                 </div>

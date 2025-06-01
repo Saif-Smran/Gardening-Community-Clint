@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FaHeart, FaComment, FaShare, FaArrowLeft } from 'react-icons/fa';
 import { AuthContext } from '../providers/AuthProvider';
 import Swal from 'sweetalert2';
+import LoadingAnimation from './LoadingAnimation';
 
 const TipDetails = () => {
     const { tipId } = useParams();
@@ -182,11 +184,7 @@ const TipDetails = () => {
     };
 
     if (loading) {
-        return (
-            <div className="min-h-[calc(100vh-200px)] flex items-center justify-center">
-                <span className="loading loading-spinner loading-lg text-primary"></span>
-            </div>
-        );
+        return <LoadingAnimation />;
     }
 
     if (!tip) {
@@ -208,6 +206,11 @@ const TipDetails = () => {
 
     return (
         <div className="min-h-[calc(100vh-200px)] py-10 px-4">
+            <Helmet>
+                <title>{tip?.title ? `${tip.title} - GardenGlow` : 'Tip Details - GardenGlow'}</title>
+                <meta name="description" content={tip?.description || 'Detailed gardening tip from the GardenGlow community.'} />
+                <meta name="keywords" content={`gardening tips, ${tip?.category || ''}, ${tip?.difficulty || ''}, garden advice`} />
+            </Helmet>
             <div className="max-w-4xl mx-auto">
                 <button 
                     onClick={() => navigate('/browse-tips')}

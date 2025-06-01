@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaEye } from 'react-icons/fa';
 import { AuthContext } from '../providers/AuthProvider';
 import Swal from 'sweetalert2';
+import LoadingAnimation from './LoadingAnimation';
 
 const TopTrendingTips = () => {
     const navigate = useNavigate();
@@ -141,11 +142,7 @@ const TopTrendingTips = () => {
     };
 
     if (loading) {
-        return (
-            <div className="flex justify-center items-center min-h-[200px]">
-                <span className="loading loading-spinner loading-lg text-primary"></span>
-            </div>
-        );
+        return <LoadingAnimation />;
     }
 
     return (

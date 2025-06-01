@@ -23,7 +23,7 @@ const Navbar = () => {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h8m-8 6h16" />
                         </svg>
                     </div>
-                    <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-200 rounded-box w-52">
+                    <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-300 rounded-box w-52">
                         <li><NavLink to="/">Home</NavLink></li>
                         <li><NavLink to="/browse-tips">Browse Tips</NavLink></li>
                         {user && (
@@ -73,7 +73,7 @@ const Navbar = () => {
                         Login
                     </Link>
                 ) : (
-                    <div className="dropdown dropdown-end">
+                    <div className="dropdown dropdown-end z-10">
                         <div 
                             tabIndex={0} 
                             role="button" 
@@ -86,7 +86,7 @@ const Navbar = () => {
                                 />
                             </div>
                         </div>
-                        <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-200 rounded-box w-52">
+                        <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-300 rounded-box w-52">
                             <li className="menu-title px-2 font-semibold text-primary">
                                 {user.displayName || "User"}
                             </li>
