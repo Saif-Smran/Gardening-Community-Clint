@@ -42,7 +42,7 @@ const UpdateTip = () => {
                     confirmButtonColor: '#4CAF50',
                     background: '#DCEDC8'
                 }).then(() => {
-                    navigate('/my-tips');
+                    navigate('/dashboard/my-tips');
                 });
             } finally {
                 setFetchLoading(false);
@@ -85,7 +85,7 @@ const UpdateTip = () => {
                 iconColor: '#4CAF50'
             });
 
-            navigate('/my-tips');
+            navigate('/dashboard/my-tips');
         } catch (error) {
             console.error('Error updating tip:', error);
             Swal.fire({

@@ -27,10 +27,16 @@ const Navbar = () => {
                         <li><NavLink to="/">Home</NavLink></li>
                         <li><NavLink to="/browse-tips">Browse Tips</NavLink></li>
                         {user && (
-                            <>
-                                <li><NavLink to="/share-tip">Share Tip</NavLink></li>
-                                <li><NavLink to="/my-tips">My Tips</NavLink></li>
-                            </>
+                            <li tabIndex={0}>
+                                <details>
+                                    <summary>Dashboard</summary>
+                                    <ul className="p-2 bg-base-200 z-20">
+                                        <li><NavLink to="/dashboard">Overview</NavLink></li>
+                                        <li><NavLink to="/dashboard/share-tip">Add Tip</NavLink></li>
+                                        <li><NavLink to="/dashboard/my-tips">My Tips</NavLink></li>
+                                    </ul>
+                                </details>
+                            </li>
                         )}
                         <li><NavLink to="/explore-gardeners">Explore Gardeners</NavLink></li>
                     </ul>
@@ -46,17 +52,14 @@ const Navbar = () => {
                     <li><NavLink to="/">Home</NavLink></li>
                     <li><NavLink to="/browse-tips">Browse Tips</NavLink></li>
                     {user && (
-                        <>
-                            <li><NavLink to="/share-tip">Share Tip</NavLink></li>
-                            <li><NavLink to="/my-tips">My Tips</NavLink></li>
-                        </>
+                        <li><NavLink to="/dashboard">Dashboard</NavLink></li>
                     )}
                     <li><NavLink to="/explore-gardeners">Explore Gardeners</NavLink></li>
                 </ul>
             </div>
 
             <div className="navbar-end gap-2">
-                <button 
+                <button
                     onClick={toggleTheme}
                     className="btn btn-ghost btn-circle"
                     title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
@@ -74,15 +77,15 @@ const Navbar = () => {
                     </Link>
                 ) : (
                     <div className="dropdown dropdown-end z-10">
-                        <div 
-                            tabIndex={0} 
-                            role="button" 
+                        <div
+                            tabIndex={0}
+                            role="button"
                             className="btn btn-ghost btn-circle avatar"
                         >
                             <div className="w-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-                                <img 
-                                    alt="user avatar" 
-                                    src={user.photoURL || "https://i.ibb.co/5GzXkwq/user.png"} 
+                                <img
+                                    alt="user avatar"
+                                    src={user.photoURL || "https://i.ibb.co/5GzXkwq/user.png"}
                                 />
                             </div>
                         </div>
@@ -91,7 +94,7 @@ const Navbar = () => {
                                 {user.displayName || "User"}
                             </li>
                             <li>
-                                <button 
+                                <button
                                     onClick={handleLogout}
                                     className="text-error"
                                 >

@@ -14,6 +14,8 @@ import MyTips from '../Components/MyTips';
 import UpdateTip from '../Components/UpdateTip';
 import NotFound from '../Pages/NotFound';
 import ErrorBoundary from '../Components/ErrorBoundary';
+import DashboardOverview from '../Components/DashboardOverview';
+import DashboardLayout from '../Layouts/DashboardLayout';
 
 const router = createBrowserRouter([
     {
@@ -25,6 +27,23 @@ const router = createBrowserRouter([
                 element: <Home />
             },
             {
+                path: 'explore-gardeners',
+                element: <ExploreGardeners />
+            },
+            {
+                path: 'browse-tips',
+                element: <BrowseTips />
+            },
+
+        ]
+    },
+    {
+        path: "dashboard",
+        element: <PrivateRoute><DashboardLayout /></PrivateRoute>,
+        children: [
+            { index: true, element: <DashboardOverview /> },
+            { path: 'all-items', element: <BrowseTips /> },
+            {
                 path: 'share-tip',
                 element: <PrivateRoute><ShareTip /></PrivateRoute>
             },
@@ -35,14 +54,6 @@ const router = createBrowserRouter([
             {
                 path: 'update-tip/:tipId',
                 element: <PrivateRoute><UpdateTip /></PrivateRoute>
-            },
-            {
-                path: 'explore-gardeners',
-                element: <ExploreGardeners />
-            },
-            {
-                path: 'browse-tips',
-                element: <BrowseTips />
             },
             {
                 path: 'tip-details/:tipId',

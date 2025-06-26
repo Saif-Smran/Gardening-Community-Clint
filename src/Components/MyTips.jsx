@@ -83,11 +83,11 @@ const MyTips = () => {
     };
 
     const handleUpdate = (tipId) => {
-        navigate(`/update-tip/${tipId}`);
+        navigate(`/dashboard/update-tip/${tipId}`);
     };
 
     const handleViewDetails = (tipId) => {
-        navigate(`/tip-details/${tipId}`);
+        navigate(`/dashboard/tip-details/${tipId}`);
     };
 
     if (loading) {
@@ -114,7 +114,7 @@ const MyTips = () => {
                         <h3 className="text-lg sm:text-xl font-semibold mb-2">No tips found</h3>
                         <p className="text-base-content/70 mb-4">You haven't shared any tips yet.</p>
                         <button 
-                            onClick={() => navigate('/share-tip')}
+                            onClick={() => navigate('/dashboard/share-tip')}
                             className="btn btn-primary btn-sm sm:btn-md"
                         >
                             Share Your First Tip

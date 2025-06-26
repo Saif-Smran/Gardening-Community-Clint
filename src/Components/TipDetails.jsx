@@ -212,12 +212,12 @@ const TipDetails = () => {
                 <meta name="keywords" content={`gardening tips, ${tip?.category || ''}, ${tip?.difficulty || ''}, garden advice`} />
             </Helmet>
             <div className="w-full sm:w-11/12 max-w-4xl mx-auto">
-                <button 
+                {/* <button 
                     onClick={() => navigate('/browse-tips')}
                     className="btn btn-ghost btn-sm sm:btn-md mb-4 sm:mb-6 gap-2"
                 >
                     <FaArrowLeft /> Back to Tips
-                </button>
+                </button> */}
 
                 <div className="bg-base-300 rounded-xl shadow-xl border border-primary/10 overflow-hidden">
                     <img 
